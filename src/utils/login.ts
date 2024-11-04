@@ -1,4 +1,9 @@
-import { isSessionResponse, isTokenResponse } from 'src/utils/guards';
+import { isErrorValidate, isSessionResponse, isTokenResponse } from 'src/utils/guards';
+
+type LoginResponse = {
+  data: string | null;
+  error?: string;
+};
 
 const getToken = async (): Promise<string | null> => {
   const options = {
@@ -19,7 +24,7 @@ const getToken = async (): Promise<string | null> => {
   return isTokenResponse(tokenData) ? tokenData.request_token : null;
 };
 
-const validateToken = async (username: string, password: string): Promise<string | null> => {
+const validateToken = async (username: string, password: string): Promise<LoginResponse> => {
   const token = await getToken();
 
   const options = {
@@ -41,13 +46,17 @@ const validateToken = async (username: string, password: string): Promise<string
     options
   );
 
-  const validatedToken: unknown = await response.json();
+  const validatedData: unknown = await response.json();
 
-  return isTokenResponse(validatedToken) ? validatedToken.request_token : null;
+  if (isErrorValidate(validatedData))
+    return { data: validatedData.request_token, error: validatedData.status_message };
+  else if (isTokenResponse(validatedData)) return { data: validatedData.request_token };
+
+  return { data: null };
 };
 
-export const getSessionId = async (username: string, password: string): Promise<string | null> => {
-  const validatedToken = await validateToken(username, password);
+export const getSessionId = async (username: string, password: string): Promise<LoginResponse> => {
+  const { data: validatedToken, error } = await validateToken(username, password);
 
   const options = {
     method: 'POST',
@@ -63,5 +72,5 @@ export const getSessionId = async (username: string, password: string): Promise<
 
   const sessionData: unknown = await response.json();
 
-  return isSessionResponse(sessionData) ? sessionData.session_id : null;
+  return isSessionResponse(sessionData) ? { data: sessionData.session_id } : { data: null, error };
 };

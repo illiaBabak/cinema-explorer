@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import LoginPage from 'src/pages/LoginPage';
 import { MainPage } from 'src/pages/MainPage';
+import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
 
 export class App extends Component {
@@ -10,11 +11,12 @@ export class App extends Component {
       <div className='container'>
         <BrowserRouter>
           <Switch>
-            <Route path='/start' component={StartPage} />
+            <Route exact path='/' component={StartPage} />
             <Route path='/login' component={LoginPage} />
             <Route path='/home' component={MainPage} />
-            <Route>
-              <Redirect to='/start' />
+            <Route path='/redirect' component={RedirectPage} />
+            <Route path='*'>
+              <Redirect to='/redirect' />
             </Route>
           </Switch>
         </BrowserRouter>
