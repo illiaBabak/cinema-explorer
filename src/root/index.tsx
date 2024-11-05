@@ -8,7 +8,7 @@ import { StartPage } from 'src/pages/StartPage';
 export class App extends Component {
   render(): JSX.Element {
     return (
-      <div className='container'>
+      <div className='main-container m-0 p-0'>
         <BrowserRouter>
           <Switch>
             <Route exact path='/' component={StartPage} />
