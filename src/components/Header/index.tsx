@@ -2,6 +2,6 @@ import { Component } from 'react';
 
 export class Header extends Component {
   render(): JSX.Element {
-    return <>header</>;
+    return <div className='header w-100'></div>;
   }
 }

@@ -1,4 +1,4 @@
-import { SessionResponse, TokenResponse, ValidateErrorResponse } from 'src/types';
+import { SessionResponse, TokenResponse, User, ValidateErrorResponse } from 'src/types';
 
 export const isNumber = (data: unknown): data is number => typeof data === 'number';
 
@@ -14,3 +14,18 @@ export const isErrorValidate = (data: unknown): data is ValidateErrorResponse =>
 
 export const isSessionResponse = (data: unknown): data is SessionResponse =>
   isObj(data) && 'session_id' in data && isString(data.session_id);
+
+export const isUser = (data: unknown): data is User =>
+  isObj(data) &&
+  'avatar' in data &&
+  isObj(data.avatar) &&
+  'gravatar' in data.avatar &&
+  isObj(data.avatar.gravatar) &&
+  'hash' in data.avatar.gravatar &&
+  isString(data.avatar.gravatar.hash) &&
+  'tmdb' in data.avatar &&
+  isObj(data.avatar.tmdb) &&
+  'avatar_path' in data.avatar.tmdb &&
+  (isString(data.avatar.tmdb.avatar_path) || !!data) &&
+  'username' in data &&
+  isString(data.username);
