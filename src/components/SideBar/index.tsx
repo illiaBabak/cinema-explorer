@@ -2,21 +2,25 @@ import { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import { LoginAction, loginSetSessionId } from 'src/actions/loginActions';
-import { UserAction, userSetInfo } from 'src/actions/userActions';
+import { UserAction, userSetInfo, userShouldShowLogoutWindow } from 'src/actions/userActions';
 import { getUser } from 'src/api/user';
 import { LoginInitialState } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { User } from 'src/types';
 import { isString } from 'src/utils/guards';
+import LogoutWindow from '../LogoutWindow';
 
 const mapStateToProps = (state: { login: LoginInitialState; user: UserInitialStateType }) => ({
   sessionId: state.login.sessionId,
   user: state.user.user,
+  shouldShowLogoutWindow: state.user.shouldShowLogoutWindow,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<LoginAction | UserAction>) => ({
   setSessionId: (sessionId: string) => dispatch(loginSetSessionId(sessionId)),
   setUserInfo: (userInfo: User) => dispatch(userSetInfo(userInfo)),
+  setShouldShowLogoutWindow: (shouldShow: boolean) =>
+    dispatch(userShouldShowLogoutWindow(shouldShow)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -66,30 +70,36 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
-    const { user } = this.props;
+    const { user, setShouldShowLogoutWindow, shouldShowLogoutWindow } = this.props;
     const userImage = this.getUserImg();
 
     return (
-      <div className='sidebar d-flex flex-column justify-content-between align-items-between h-100 py-4 px-3'>
-        <div className='title-wrapper'>
-          <h1 className='title fw-bolder'>Cinema explorer</h1>
-        </div>
-        <div className='user d-flex flex-row align-items-center'>
-          {userImage ? (
-            <img
-              src={userImage}
-              alt='user-icon'
-              className='user-img object-fit-cover rounded-circle'
-            />
-          ) : (
-            <div className='user-img rounded-circle d-flex justify-content-center align-items-center'>
-              <p className='m-0 fs-2 text-white'>{user?.username.slice(0, 1).toUpperCase()}</p>
-            </div>
-          )}
+      <>
+        {shouldShowLogoutWindow && <LogoutWindow />}
+        <div className='sidebar d-flex flex-column justify-content-between align-items-between h-100 py-4 px-3'>
+          <div className='title-wrapper'>
+            <h1 className='title fw-bolder'>Cinema explorer</h1>
+          </div>
+          <div
+            className='user d-flex flex-row align-items-center'
+            onClick={() => setShouldShowLogoutWindow(true)}
+          >
+            {userImage ? (
+              <img
+                src={userImage}
+                alt='user-icon'
+                className='user-img object-fit-cover rounded-circle'
+              />
+            ) : (
+              <div className='user-img rounded-circle d-flex justify-content-center align-items-center'>
+                <p className='m-0 fs-2 text-white'>{user?.username.slice(0, 1).toUpperCase()}</p>
+              </div>
+            )}
 
-          <h4 className='m-0 ms-2'>{user?.username}</h4>
+            <h4 className='m-0 ms-2'>{user?.username}</h4>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
