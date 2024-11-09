@@ -2,10 +2,13 @@ import { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import { UserAction, userShouldShowLogoutWindow } from 'src/actions/userActions';
+import { deleteSessionId } from 'src/api/login';
+import { LoginInitialState } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 
-const mapStateToProps = (state: { user: UserInitialStateType }) => ({
+const mapStateToProps = (state: { user: UserInitialStateType; login: LoginInitialState }) => ({
   user: state.user.user,
+  sessionId: state.login.sessionId,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<UserAction>) => ({
@@ -17,6 +20,9 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 class LogoutWindow extends Component<ConnectedProps<typeof connector>> {
   handleLogout = () => {
+    if (!this.props.sessionId) return;
+
+    deleteSessionId(this.props.sessionId);
     sessionStorage.removeItem('sessionId');
     window.location.href = '/';
   };

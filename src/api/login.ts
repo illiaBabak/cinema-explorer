@@ -74,3 +74,19 @@ export const getSessionId = async (username: string, password: string): Promise<
 
   return isSessionResponse(sessionData) ? { data: sessionData.session_id } : { data: null, error };
 };
+
+export const deleteSessionId = async (sessionId: string): Promise<void> => {
+  const options = {
+    method: 'DELETE',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      Authorization: import.meta.env.VITE_TMDB_API_KEY,
+    },
+    body: JSON.stringify({ session_id: sessionId }),
+  };
+
+  const response = await fetch('https://api.themoviedb.org/3/authentication/session', options);
+
+  if (!response) throw new Error('Failed to delete session id using tmdb');
+};
