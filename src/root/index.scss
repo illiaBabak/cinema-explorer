@@ -5,3 +5,19 @@
   width: 100vw;
   height: 100vh;
 }
+
+.scroll-container {
+  overflow: hidden auto;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: #00dbde;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #fc00ff;
+}

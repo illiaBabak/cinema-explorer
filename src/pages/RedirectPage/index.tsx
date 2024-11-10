@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { pageConfig } from 'src/config/pages';
 
 export class RedirectPage extends Component {
   render(): JSX.Element {
@@ -8,7 +9,7 @@ export class RedirectPage extends Component {
         <h1>Oops, something went wrong...</h1>
         <NavLink
           className='link-btn d-flex justify-content-center align-items-center rounded mt-4'
-          to='/'
+          to={pageConfig.start}
         >
           Start page
         </NavLink>

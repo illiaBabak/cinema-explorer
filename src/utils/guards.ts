@@ -1,4 +1,13 @@
-import { SessionResponse, TokenResponse, User, ValidateErrorResponse } from 'src/types';
+import {
+  Genre,
+  GenresResponse,
+  MovieResponse,
+  MovieType,
+  SessionResponse,
+  TokenResponse,
+  User,
+  ValidateErrorResponse,
+} from 'src/types';
 
 export const isNumber = (data: unknown): data is number => typeof data === 'number';
 
@@ -29,3 +38,28 @@ export const isUser = (data: unknown): data is User =>
   (isString(data.avatar.tmdb.avatar_path) || !!data) &&
   'username' in data &&
   isString(data.username);
+
+export const isMovie = (data: unknown): data is MovieType =>
+  isObj(data) &&
+  'poster_path' in data &&
+  'genre_ids' in data &&
+  'original_title' in data &&
+  isString(data.poster_path) &&
+  isString(data.original_title) &&
+  Array.isArray(data.genre_ids) &&
+  data.genre_ids.every((el) => isNumber(el));
+
+export const isMovieResponse = (data: unknown): data is MovieResponse =>
+  isObj(data) &&
+  'results' in data &&
+  Array.isArray(data.results) &&
+  data.results.every((el) => isMovie(el));
+
+export const isGenre = (data: unknown): data is Genre =>
+  isObj(data) && 'id' in data && 'name' in data && isNumber(data.id) && isString(data.name);
+
+export const isGenresResponse = (data: unknown): data is GenresResponse =>
+  isObj(data) &&
+  'genres' in data &&
+  Array.isArray(data.genres) &&
+  data.genres.every((el) => isGenre(el));

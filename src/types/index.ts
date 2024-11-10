@@ -20,3 +20,22 @@ export type User = {
 
   username: string;
 };
+
+export type MovieType = {
+  poster_path: string;
+  genre_ids: number[];
+  original_title: string;
+};
+
+export type MovieResponse = {
+  results: MovieType[];
+};
+
+export type Genre = {
+  id: number;
+  name: string;
+};
+
+export type GenresResponse = {
+  genres: Genre[];
+};

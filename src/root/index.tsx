@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import LoginPage from 'src/pages/LoginPage';
-import { MainPage } from 'src/pages/MainPage';
+import MainPage from 'src/pages/MainPage';
 import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
 

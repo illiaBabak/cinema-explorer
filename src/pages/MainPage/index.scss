@@ -1,5 +1,35 @@
 .main-page {
   .content {
     width: 85%;
+
+    .main-content {
+      .categories {
+        .category {
+          width: 120px;
+          height: 50px;
+          text-decoration: none;
+          background-image: linear-gradient(90deg, #00dbde 0%, #fc00ff 100%);
+          font-size: 24px;
+          filter: grayscale(30%);
+          opacity: 0.6;
+          cursor: pointer;
+
+          &:hover {
+            transform: scale(1.05);
+            transition: 0.33s;
+          }
+        }
+
+        .selected-category {
+          filter: grayscale(0);
+          opacity: 1;
+        }
+      }
+
+      .loader {
+        left: 50%;
+        top: 50%;
+      }
+    }
   }
 }

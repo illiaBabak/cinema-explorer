@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { pageConfig } from 'src/config/pages';
 
 export class StartPage extends Component {
   render(): JSX.Element {
@@ -16,7 +17,7 @@ export class StartPage extends Component {
         <p className='mt-2 fw-bolder'>To use our service, please login with your TMDB account</p>
         <NavLink
           className='login-btn d-flex justify-content-center align-items-center rounded mt-3'
-          to='/login'
+          to={pageConfig.login}
         >
           Login
         </NavLink>
