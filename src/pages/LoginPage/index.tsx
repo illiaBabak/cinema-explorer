@@ -13,6 +13,7 @@ import {
 import { Loader } from 'src/components/Loader';
 import { LoginInitialState } from 'src/reducers/loginReducer';
 import { getSessionId } from 'src/api/login';
+import { pageConfig } from 'src/config/pages';
 
 const mapStateToProps = (state: { login: LoginInitialState }) => ({
   name: state.login.name,
@@ -50,7 +51,7 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
     if (sessionId) {
       this.props.setSessionId(sessionId);
       sessionStorage.setItem('sessionId', sessionId);
-      window.location.href = '/home';
+      window.location.href = pageConfig.home;
     }
   };
 

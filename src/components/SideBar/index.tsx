@@ -9,6 +9,7 @@ import { UserInitialStateType } from 'src/reducers/userReducer';
 import { User } from 'src/types';
 import { isString } from 'src/utils/guards';
 import LogoutWindow from '../LogoutWindow';
+import { pageConfig } from 'src/config/pages';
 
 const mapStateToProps = (state: { login: LoginInitialState; user: UserInitialStateType }) => ({
   sessionId: state.login.sessionId,
@@ -60,7 +61,7 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
     const sessionId = isString(parsedSessionId) ? parsedSessionId : null;
 
     if (!sessionId) {
-      window.location.href = '/redirect';
+      window.location.href = pageConfig.redirect;
       return;
     }
 

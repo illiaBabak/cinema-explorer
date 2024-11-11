@@ -7,7 +7,7 @@ import {
   MOVIE_SET_UPCOMING_LIST,
   MovieAction,
 } from 'src/actions/movieActions';
-import { Genre, MovieType } from 'src/types';
+import { MovieType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 
 export type MovieInitialStateType = {
@@ -28,7 +28,9 @@ export type MovieInitialStateType = {
   };
   currentCategory: (typeof MOVIE_CATEGORIES)[number];
   isLoading: boolean;
-  genres: Genre[];
+  genres: {
+    [k: string]: string;
+  };
 };
 
 export const movieInitialState: MovieInitialStateType = {
@@ -50,7 +52,7 @@ export const movieInitialState: MovieInitialStateType = {
   },
   currentCategory: 'upcoming',
   isLoading: false,
-  genres: [],
+  genres: {},
 };
 
 export const movieReducer = (
@@ -108,7 +110,7 @@ export const movieReducer = (
     case MOVIE_SET_GENRES: {
       return {
         ...state,
-        genres: action.payload,
+        genres: Object.fromEntries(action.payload.map((genre) => [genre.id, genre.name])),
       };
     }
 

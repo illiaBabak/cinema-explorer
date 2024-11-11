@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import { UserAction, userShouldShowLogoutWindow } from 'src/actions/userActions';
 import { deleteSessionId } from 'src/api/login';
+import { pageConfig } from 'src/config/pages';
 import { LoginInitialState } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 
@@ -24,7 +25,7 @@ class LogoutWindow extends Component<ConnectedProps<typeof connector>> {
 
     deleteSessionId(this.props.sessionId);
     sessionStorage.removeItem('sessionId');
-    window.location.href = '/';
+    window.location.href = pageConfig.start;
   };
 
   getUserImg = () => {
