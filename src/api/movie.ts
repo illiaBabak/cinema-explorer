@@ -10,17 +10,25 @@ const OPTIONS = {
   },
 };
 
+type Result = {
+  movies: MovieType[];
+  maxPages: number;
+};
+
 export const getMovies = async (
-  category: (typeof MOVIE_CATEGORIES)[number]
-): Promise<MovieType[]> => {
+  category: (typeof MOVIE_CATEGORIES)[number],
+  page: number
+): Promise<Result> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`,
+    `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=${page}`,
     OPTIONS
   );
 
   const movieResponse: unknown = await response.json();
 
-  return isMovieResponse(movieResponse) ? movieResponse.results : [];
+  return isMovieResponse(movieResponse)
+    ? { movies: movieResponse.results, maxPages: movieResponse.total_pages }
+    : { movies: [], maxPages: 1 };
 };
 
 export const getGenres = async (): Promise<Genre[]> => {

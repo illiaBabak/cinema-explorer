@@ -27,14 +27,13 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
           />
           <p className='text-center m-0 title'>{movie.original_title}</p>
           <div className='genres d-flex flex-row align-items-center justify-content-center w-100 mt-2'>
-            {genres.map((genre, index) => {
-              if (movie.genre_ids.slice(0, 2).includes(genre.id))
-                return (
-                  <p className='my-0 mx-1 genre fst-italic' key={`genre-${genre.id}-${index}`}>
-                    {genre.name}
-                  </p>
-                );
-            })}
+            {genres
+              .filter((genre) => movie.genre_ids.slice(0, 2).includes(genre.id))
+              .map((genre) => (
+                <p className='my-0 mx-1 genre fst-italic' key={`genre-${genre.id}`}>
+                  {genre.name}
+                </p>
+              ))}
           </div>
         </div>
       </div>

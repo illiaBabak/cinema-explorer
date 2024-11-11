@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
@@ -18,7 +18,7 @@ import SideBar from 'src/components/SideBar';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { Genre, MovieType } from 'src/types';
 import { capitalize } from 'src/utils/capitalize';
-import { MOVIE_CATEGORIES } from 'src/utils/constants';
+import { MOVIE_CATEGORIES, OBSERVER_OPTIONS } from 'src/utils/constants';
 import { removeUnderlines } from 'src/utils/removeUnderlines';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
@@ -30,9 +30,33 @@ const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setUpComingMovies: (movies: MovieType[]) => dispatch(movieSetUpComingList(movies)),
-  setTopRatedMovies: (movies: MovieType[]) => dispatch(movieSetTopRatedList(movies)),
-  setPopularMovies: (movies: MovieType[]) => dispatch(movieSetPopularList(movies)),
+  setUpComingMovies: ({
+    movies,
+    page,
+    maxPages,
+  }: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  }) => dispatch(movieSetUpComingList({ movies, page, maxPages })),
+  setTopRatedMovies: ({
+    movies,
+    page,
+    maxPages,
+  }: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  }) => dispatch(movieSetTopRatedList({ movies, page, maxPages })),
+  setPopularMovies: ({
+    movies,
+    page,
+    maxPages,
+  }: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  }) => dispatch(movieSetPopularList({ movies, page, maxPages })),
   setCurrentCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
     dispatch(movieSetCurrentCategory(category)),
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
@@ -43,28 +67,51 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 class MainPage extends Component<ConnectedProps<typeof connector>> {
   isInitialized = true;
+  observer: IntersectionObserver | null = null;
+  observerRef = createRef<HTMLDivElement>();
 
   setMovies = async (category: (typeof MOVIE_CATEGORIES)[number]): Promise<void> => {
-    this.props.setCurrentCategory(category);
-    this.props.setIsLoadingMovies(true);
+    const {
+      setCurrentCategory,
+      setIsLoadingMovies,
+      upComingMovies,
+      setUpComingMovies,
+      popularMovies,
+      setPopularMovies,
+      topRatedMovies,
+      setTopRatedMovies,
+    } = this.props;
 
-    const movies = await getMovies(category);
+    setCurrentCategory(category);
+    setIsLoadingMovies(true);
 
-    switch (category) {
-      case 'upcoming':
-        this.props.setUpComingMovies(movies);
-        break;
+    if (category === 'upcoming' && upComingMovies.page <= upComingMovies.maxPages) {
+      const { movies, maxPages } = await getMovies(category, upComingMovies.page);
 
-      case 'popular':
-        this.props.setPopularMovies(movies);
-        break;
+      setUpComingMovies({
+        movies: [...upComingMovies.movies, ...movies],
+        page: upComingMovies.page,
+        maxPages,
+      });
+    } else if (category === 'popular' && popularMovies.page <= popularMovies.maxPages) {
+      const { movies, maxPages } = await getMovies(category, popularMovies.page);
 
-      case 'top_rated':
-        this.props.setTopRatedMovies(movies);
-        break;
+      setPopularMovies({
+        movies: [...popularMovies.movies, ...movies],
+        page: popularMovies.page,
+        maxPages,
+      });
+    } else if (category === 'top_rated' && topRatedMovies.page <= topRatedMovies.maxPages) {
+      const { movies, maxPages } = await getMovies(category, topRatedMovies.page);
+
+      setTopRatedMovies({
+        movies: [...topRatedMovies.movies, ...movies],
+        page: topRatedMovies.page,
+        maxPages,
+      });
     }
 
-    this.props.setIsLoadingMovies(false);
+    setIsLoadingMovies(false);
   };
 
   setGenres = async () => {
@@ -73,12 +120,74 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
     this.props.setMovieGenres(genres);
   };
 
+  updatePage = () => {
+    const {
+      currentCategory,
+      upComingMovies,
+      popularMovies,
+      topRatedMovies,
+      setUpComingMovies,
+      setPopularMovies,
+      setTopRatedMovies,
+    } = this.props;
+
+    switch (currentCategory) {
+      case 'upcoming':
+        setUpComingMovies({
+          movies: [...upComingMovies.movies],
+          page: ++upComingMovies.page,
+          maxPages: upComingMovies.maxPages,
+        });
+
+        break;
+
+      case 'popular':
+        setPopularMovies({
+          movies: [...popularMovies.movies],
+          page: ++popularMovies.page,
+          maxPages: popularMovies.maxPages,
+        });
+
+        break;
+
+      case 'top_rated':
+        setTopRatedMovies({
+          movies: [...topRatedMovies.movies],
+          page: ++topRatedMovies.page,
+          maxPages: topRatedMovies.maxPages,
+        });
+
+        break;
+    }
+
+    this.setMovies(currentCategory);
+  };
+
+  handleObserver = (el: HTMLElement | null) => {
+    if (this.observer) this.observer.disconnect();
+
+    this.observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+
+      this.updatePage();
+    }, OBSERVER_OPTIONS);
+
+    if (el) this.observer.observe(el);
+  };
+
   componentDidMount(): void {
+    if (this.observerRef.current && !this.isInitialized)
+      setTimeout(() => this.handleObserver(this.observerRef.current), 0);
+
     if (!this.isInitialized) return;
 
     this.isInitialized = false;
     this.setGenres();
     this.setMovies(this.props.currentCategory);
+  }
+
+  componentWillUnmount(): void {
+    if (this.observer) this.observer.disconnect();
   }
 
   render(): JSX.Element {
@@ -104,26 +213,26 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
                 </div>
               ))}
             </div>
-            {isLoadingMovies ? (
-              <Loader />
-            ) : (
-              <div className='d-flex flex-row w-100 h-100 flex-wrap justify-content-center align-items-center scroll-container'>
-                {currentCategory === 'upcoming' &&
-                  upComingMovies.map((movie, index) => (
-                    <Movie movie={movie} key={`upcoming-movie-${index}`} />
-                  ))}
+            <div className='d-flex flex-row w-100 h-100 flex-wrap justify-content-center align-items-center scroll-container position-relative'>
+              {isLoadingMovies && <Loader />}
 
-                {currentCategory === 'top_rated' &&
-                  topRatedMovies.map((movie, index) => (
-                    <Movie movie={movie} key={`topRated-movie-${index}`} />
-                  ))}
+              {currentCategory === 'upcoming' &&
+                upComingMovies.movies.map((movie, index) => (
+                  <Movie movie={movie} key={`upcoming-movie-${index}`} />
+                ))}
 
-                {currentCategory === 'popular' &&
-                  popularMovies.map((movie, index) => (
-                    <Movie movie={movie} key={`popular-movie-${index}`} />
-                  ))}
-              </div>
-            )}
+              {currentCategory === 'top_rated' &&
+                topRatedMovies.movies.map((movie, index) => (
+                  <Movie movie={movie} key={`topRated-movie-${index}`} />
+                ))}
+
+              {currentCategory === 'popular' &&
+                popularMovies.movies.map((movie, index) => (
+                  <Movie movie={movie} key={`popular-movie-${index}`} />
+                ))}
+
+              <div ref={this.observerRef} className='position-relative observer w-100' />
+            </div>
           </div>
         </div>
       </div>

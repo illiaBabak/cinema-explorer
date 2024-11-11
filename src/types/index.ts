@@ -22,13 +22,14 @@ export type User = {
 };
 
 export type MovieType = {
-  poster_path: string;
+  poster_path: string | null;
   genre_ids: number[];
   original_title: string;
 };
 
 export type MovieResponse = {
   results: MovieType[];
+  total_pages: number;
 };
 
 export type Genre = {

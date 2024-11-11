@@ -17,23 +17,80 @@ export type MovieAction =
   | { type: typeof MOVIE_SET_GENRES; payload: Genre[] }
   | { type: typeof MOVIE_SET_IS_LOADING; payload: boolean }
   | { type: typeof MOVIE_SET_CURRENT_CATEGORY; payload: (typeof MOVIE_CATEGORIES)[number] }
-  | { type: typeof MOVIE_SET_TOP_RATED_LIST; payload: MovieType[] }
-  | { type: typeof MOVIE_SET_POPULAR_LIST; payload: MovieType[] }
-  | { type: typeof MOVIE_SET_UPCOMING_LIST; payload: MovieType[] };
+  | {
+      type: typeof MOVIE_SET_TOP_RATED_LIST;
+      payload: {
+        movies: MovieType[];
+        page: number;
+        maxPages: number;
+      };
+    }
+  | {
+      type: typeof MOVIE_SET_POPULAR_LIST;
+      payload: {
+        movies: MovieType[];
+        page: number;
+        maxPages: number;
+      };
+    }
+  | {
+      type: typeof MOVIE_SET_UPCOMING_LIST;
+      payload: {
+        movies: MovieType[];
+        page: number;
+        maxPages: number;
+      };
+    };
 
-export const movieSetPopularList = (movies: MovieType[]): MovieAction => ({
+export const movieSetPopularList = ({
+  movies,
+  page,
+  maxPages,
+}: {
+  movies: MovieType[];
+  page: number;
+  maxPages: number;
+}): MovieAction => ({
   type: MOVIE_SET_POPULAR_LIST,
-  payload: movies,
+  payload: {
+    movies,
+    page,
+    maxPages,
+  },
 });
 
-export const movieSetTopRatedList = (movies: MovieType[]): MovieAction => ({
+export const movieSetTopRatedList = ({
+  movies,
+  page,
+  maxPages,
+}: {
+  movies: MovieType[];
+  page: number;
+  maxPages: number;
+}): MovieAction => ({
   type: MOVIE_SET_TOP_RATED_LIST,
-  payload: movies,
+  payload: {
+    movies,
+    page,
+    maxPages,
+  },
 });
 
-export const movieSetUpComingList = (movies: MovieType[]): MovieAction => ({
+export const movieSetUpComingList = ({
+  movies,
+  page,
+  maxPages,
+}: {
+  movies: MovieType[];
+  page: number;
+  maxPages: number;
+}): MovieAction => ({
   type: MOVIE_SET_UPCOMING_LIST,
-  payload: movies,
+  payload: {
+    movies,
+    page,
+    maxPages,
+  },
 });
 
 export const movieSetCurrentCategory = (

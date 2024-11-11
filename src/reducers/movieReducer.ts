@@ -11,18 +11,43 @@ import { Genre, MovieType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 
 export type MovieInitialStateType = {
-  popularMovies: MovieType[];
-  upComingMovies: MovieType[];
-  topRatedMovies: MovieType[];
+  popularMovies: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  };
+  upComingMovies: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  };
+  topRatedMovies: {
+    movies: MovieType[];
+    page: number;
+    maxPages: number;
+  };
   currentCategory: (typeof MOVIE_CATEGORIES)[number];
   isLoading: boolean;
   genres: Genre[];
 };
 
 export const movieInitialState: MovieInitialStateType = {
-  popularMovies: [],
-  upComingMovies: [],
-  topRatedMovies: [],
+  popularMovies: {
+    movies: [],
+    page: 1,
+    maxPages: 1,
+  },
+
+  upComingMovies: {
+    movies: [],
+    page: 1,
+    maxPages: 1,
+  },
+  topRatedMovies: {
+    movies: [],
+    page: 1,
+    maxPages: 1,
+  },
   currentCategory: 'upcoming',
   isLoading: false,
   genres: [],
@@ -36,21 +61,33 @@ export const movieReducer = (
     case MOVIE_SET_POPULAR_LIST: {
       return {
         ...state,
-        popularMovies: action.payload,
+        popularMovies: {
+          movies: action.payload.movies,
+          page: action.payload.page,
+          maxPages: action.payload.maxPages,
+        },
       };
     }
 
     case MOVIE_SET_TOP_RATED_LIST: {
       return {
         ...state,
-        topRatedMovies: action.payload,
+        topRatedMovies: {
+          movies: action.payload.movies,
+          page: action.payload.page,
+          maxPages: action.payload.maxPages,
+        },
       };
     }
 
     case MOVIE_SET_UPCOMING_LIST: {
       return {
         ...state,
-        upComingMovies: action.payload,
+        upComingMovies: {
+          movies: action.payload.movies,
+          page: action.payload.page,
+          maxPages: action.payload.maxPages,
+        },
       };
     }
 

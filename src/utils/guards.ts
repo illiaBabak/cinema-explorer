@@ -35,7 +35,7 @@ export const isUser = (data: unknown): data is User =>
   'tmdb' in data.avatar &&
   isObj(data.avatar.tmdb) &&
   'avatar_path' in data.avatar.tmdb &&
-  (isString(data.avatar.tmdb.avatar_path) || !!data) &&
+  (isString(data.avatar.tmdb.avatar_path) || !data.avatar.tmdb.avatar_path) &&
   'username' in data &&
   isString(data.username);
 
@@ -44,7 +44,7 @@ export const isMovie = (data: unknown): data is MovieType =>
   'poster_path' in data &&
   'genre_ids' in data &&
   'original_title' in data &&
-  isString(data.poster_path) &&
+  (isString(data.poster_path) || !data.poster_path) &&
   isString(data.original_title) &&
   Array.isArray(data.genre_ids) &&
   data.genre_ids.every((el) => isNumber(el));
@@ -52,8 +52,10 @@ export const isMovie = (data: unknown): data is MovieType =>
 export const isMovieResponse = (data: unknown): data is MovieResponse =>
   isObj(data) &&
   'results' in data &&
+  'total_pages' in data &&
   Array.isArray(data.results) &&
-  data.results.every((el) => isMovie(el));
+  data.results.every((el) => isMovie(el)) &&
+  isNumber(data.total_pages);
 
 export const isGenre = (data: unknown): data is Genre =>
   isObj(data) && 'id' in data && 'name' in data && isNumber(data.id) && isString(data.name);
