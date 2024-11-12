@@ -1,2 +1,29 @@
 .header {
+  .input-wrapper {
+    width: 420px;
+
+    .search-input {
+      width: 420px;
+      height: 35px;
+      border: 3px #fc00ff solid;
+      padding: 6px;
+      padding-right: 32px;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+        border: 3px #00dbde solid;
+      }
+    }
+
+    .clear-btn {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      right: 0;
+      top: 50%;
+      transform: translate(-25%, -50%);
+      cursor: pointer;
+    }
+  }
 }

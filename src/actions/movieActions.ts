@@ -7,6 +7,10 @@ export const MOVIE_SET_TOP_RATED_LIST = 'movie_set_top_rated_list';
 
 export const MOVIE_SET_UPCOMING_LIST = 'movie_set_upcoming_list';
 
+export const MOVIE_SET_SEARCHED_LIST = 'movie_set_searched_list';
+
+export const MOVIE_SET_QUERY = 'movie_set_query';
+
 export const MOVIE_SET_CURRENT_CATEGORY = 'movie_set_current_category';
 
 export const MOVIE_SET_IS_LOADING = 'movie_set_is_loading';
@@ -40,6 +44,16 @@ export type MovieAction =
         page: number;
         maxPages: number;
       };
+    }
+  | {
+      type: typeof MOVIE_SET_SEARCHED_LIST;
+      payload: {
+        movies: MovieType[];
+      };
+    }
+  | {
+      type: typeof MOVIE_SET_QUERY;
+      payload: string;
     };
 
 export const movieSetPopularList = ({
@@ -91,6 +105,18 @@ export const movieSetUpComingList = ({
     page,
     maxPages,
   },
+});
+
+export const movieSetSearchedList = ({ movies }: { movies: MovieType[] }): MovieAction => ({
+  type: MOVIE_SET_SEARCHED_LIST,
+  payload: {
+    movies,
+  },
+});
+
+export const movieSetQuery = (query: string): MovieAction => ({
+  type: MOVIE_SET_QUERY,
+  payload: query,
 });
 
 export const movieSetCurrentCategory = (

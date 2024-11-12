@@ -31,6 +31,17 @@ export const getMovies = async (
     : { movies: [], maxPages: 1 };
 };
 
+export const getSearchedMovies = async (query: string): Promise<MovieType[]> => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/search/movie?query=${query}&language=en-US&page=1`,
+    OPTIONS
+  );
+
+  const movieResponse: unknown = await response.json();
+
+  return isMovieResponse(movieResponse) ? movieResponse.results : [];
+};
+
 export const getGenres = async (): Promise<Genre[]> => {
   const response = await fetch(
     'https://api.themoviedb.org/3/genre/movie/list?language=en',

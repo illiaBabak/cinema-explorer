@@ -7,11 +7,13 @@ import {
   movieSetGenres,
   movieSetIsLoading,
   movieSetPopularList,
+  movieSetQuery,
+  movieSetSearchedList,
   movieSetTopRatedList,
   movieSetUpComingList,
 } from 'src/actions/movieActions';
 import { getGenres, getMovies } from 'src/api/movie';
-import { Header } from 'src/components/Header';
+import Header from 'src/components/Header';
 import { Loader } from 'src/components/Loader';
 import Movie from 'src/components/Movie';
 import SideBar from 'src/components/SideBar';
@@ -25,8 +27,10 @@ const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
   upComingMovies: state.movie.upComingMovies,
   topRatedMovies: state.movie.topRatedMovies,
   popularMovies: state.movie.popularMovies,
+  searchedMovies: state.movie.searchedMovies,
   currentCategory: state.movie.currentCategory,
   isLoadingMovies: state.movie.isLoading,
+  query: state.movie.query,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
@@ -57,10 +61,13 @@ const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
     page: number;
     maxPages: number;
   }) => dispatch(movieSetPopularList({ movies, page, maxPages })),
+  setSearchedMovies: ({ movies }: { movies: MovieType[] }) =>
+    dispatch(movieSetSearchedList({ movies })),
   setCurrentCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
     dispatch(movieSetCurrentCategory(category)),
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setMovieGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
+  setQuery: (query: string) => dispatch(movieSetQuery(query)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -131,33 +138,24 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       setTopRatedMovies,
     } = this.props;
 
-    switch (currentCategory) {
-      case 'upcoming':
-        setUpComingMovies({
-          movies: [...upComingMovies.movies],
-          page: ++upComingMovies.page,
-          maxPages: upComingMovies.maxPages,
-        });
-
-        break;
-
-      case 'popular':
-        setPopularMovies({
-          movies: [...popularMovies.movies],
-          page: ++popularMovies.page,
-          maxPages: popularMovies.maxPages,
-        });
-
-        break;
-
-      case 'top_rated':
-        setTopRatedMovies({
-          movies: [...topRatedMovies.movies],
-          page: ++topRatedMovies.page,
-          maxPages: topRatedMovies.maxPages,
-        });
-
-        break;
+    if (currentCategory === 'upcoming') {
+      setUpComingMovies({
+        movies: [...upComingMovies.movies],
+        page: ++upComingMovies.page,
+        maxPages: upComingMovies.maxPages,
+      });
+    } else if (currentCategory === 'popular') {
+      setPopularMovies({
+        movies: [...popularMovies.movies],
+        page: ++popularMovies.page,
+        maxPages: popularMovies.maxPages,
+      });
+    } else if (currentCategory === 'top_rated') {
+      setTopRatedMovies({
+        movies: [...topRatedMovies.movies],
+        page: ++topRatedMovies.page,
+        maxPages: topRatedMovies.maxPages,
+      });
     }
 
     this.setMovies(currentCategory);
@@ -191,23 +189,39 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
-    const { currentCategory, upComingMovies, topRatedMovies, popularMovies, isLoadingMovies } =
-      this.props;
+    const {
+      currentCategory,
+      upComingMovies,
+      topRatedMovies,
+      popularMovies,
+      isLoadingMovies,
+      searchedMovies,
+      setSearchedMovies,
+      setQuery,
+    } = this.props;
 
     return (
       <div className='main-page d-flex flex-row justify-content-start w-100 h-100'>
         <SideBar />
         <div className='d-flex flex-column justify-content-start align-items-center content h-100'>
-          <Header />
           <div className='main-content d-flex flex-column justify-content-start align-items-start w-100 h-100 position-relative'>
+            <Header />
             <div className='d-flex flex-row categories'>
               {MOVIE_CATEGORIES.map((category, index) => (
                 <div
                   className={`category ${
-                    category === currentCategory ? 'selected-category' : ''
+                    category === currentCategory && !searchedMovies.movies.length
+                      ? 'selected-category'
+                      : ''
                   } text-white d-flex justify-content-center align-items-center m-3 p-1 rounded`}
                   key={`${category}-${index}-category`}
-                  onClick={() => this.setMovies(category)}
+                  onClick={() => {
+                    this.setMovies(category);
+                    setQuery('');
+                    setSearchedMovies({
+                      movies: [],
+                    });
+                  }}
                 >
                   {removeUnderlines(capitalize(category))}
                 </div>
@@ -216,17 +230,25 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
             <div className='d-flex flex-row w-100 h-100 flex-wrap justify-content-center align-items-center scroll-container position-relative'>
               {isLoadingMovies && <Loader />}
 
+              {!!searchedMovies.movies.length &&
+                searchedMovies.movies.map((movie, index) => (
+                  <Movie movie={movie} key={`searched-movie-${index}`} />
+                ))}
+
               {currentCategory === 'upcoming' &&
+                !searchedMovies.movies.length &&
                 upComingMovies.movies.map((movie, index) => (
                   <Movie movie={movie} key={`upcoming-movie-${index}`} />
                 ))}
 
               {currentCategory === 'top_rated' &&
+                !searchedMovies.movies.length &&
                 topRatedMovies.movies.map((movie, index) => (
                   <Movie movie={movie} key={`topRated-movie-${index}`} />
                 ))}
 
               {currentCategory === 'popular' &&
+                !searchedMovies.movies.length &&
                 popularMovies.movies.map((movie, index) => (
                   <Movie movie={movie} key={`popular-movie-${index}`} />
                 ))}

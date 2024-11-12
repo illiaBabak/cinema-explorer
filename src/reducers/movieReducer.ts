@@ -3,6 +3,8 @@ import {
   MOVIE_SET_GENRES,
   MOVIE_SET_IS_LOADING,
   MOVIE_SET_POPULAR_LIST,
+  MOVIE_SET_QUERY,
+  MOVIE_SET_SEARCHED_LIST,
   MOVIE_SET_TOP_RATED_LIST,
   MOVIE_SET_UPCOMING_LIST,
   MovieAction,
@@ -26,6 +28,10 @@ export type MovieInitialStateType = {
     page: number;
     maxPages: number;
   };
+  searchedMovies: {
+    movies: MovieType[];
+  };
+  query: string;
   currentCategory: (typeof MOVIE_CATEGORIES)[number];
   isLoading: boolean;
   genres: {
@@ -50,6 +56,10 @@ export const movieInitialState: MovieInitialStateType = {
     page: 1,
     maxPages: 1,
   },
+  searchedMovies: {
+    movies: [],
+  },
+  query: '',
   currentCategory: 'upcoming',
   isLoading: false,
   genres: {},
@@ -90,6 +100,22 @@ export const movieReducer = (
           page: action.payload.page,
           maxPages: action.payload.maxPages,
         },
+      };
+    }
+
+    case MOVIE_SET_SEARCHED_LIST: {
+      return {
+        ...state,
+        searchedMovies: {
+          movies: action.payload.movies,
+        },
+      };
+    }
+
+    case MOVIE_SET_QUERY: {
+      return {
+        ...state,
+        query: action.payload,
       };
     }
 
