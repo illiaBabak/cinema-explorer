@@ -47,7 +47,7 @@ class Header extends Component<ConnectedProps<typeof connector>> {
       <div className='header w-100 p-3'>
         <div className='input-wrapper position-relative d-flex align-items-center'>
           <input
-            className='search-input fs-5'
+            className='search-input fs-5 p-2'
             placeholder='Write something to find movie...'
             type='text'
             value={query}

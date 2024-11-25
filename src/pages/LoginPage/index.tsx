@@ -69,7 +69,7 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
 
     return (
       <div className='login-page w-100 h-100 d-flex justify-content-center align-items-center'>
-        <div className='form-wrapper p-2'>
+        <div className='form-wrapper p-1'>
           <form className='form d-flex flex-column align-items-center justify-content-between px-4 py-3 w-100 h-100'>
             <div className='text-center'>
               <h2 className='mb-4'>Login</h2>

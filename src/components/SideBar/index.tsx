@@ -77,12 +77,12 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
     return (
       <>
         {shouldShowLogoutWindow && <LogoutWindow />}
-        <div className='sidebar d-flex flex-column justify-content-between align-items-between h-100 py-4 px-3'>
+        <div className='sidebar d-flex flex-column justify-content-between align-items-start h-100 py-4 px-2'>
           <div className='title-wrapper'>
             <h1 className='title fw-bolder'>Cinema explorer</h1>
           </div>
           <div
-            className='user d-flex flex-row align-items-center'
+            className='user d-flex flex-row align-items-center justify-content-start flex-wrap'
             onClick={() => setShouldShowLogoutWindow(true)}
           >
             {userImage ? (
@@ -97,7 +97,7 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
               </div>
             )}
 
-            <h4 className='m-0 ms-2'>{user?.username}</h4>
+            <p className='m-0 ms-1 username'>{user?.username}</p>
           </div>
         </div>
       </>
