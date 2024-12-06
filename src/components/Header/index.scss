@@ -5,14 +5,16 @@
     .search-input {
       width: 420px;
       height: 35px;
-      border: 3px #fc00ff solid;
+      border: 3px var(--border) solid;
       padding: 6px;
       padding-right: 32px;
+      background-color: var(--card);
+      color: var(--text);
       cursor: pointer;
 
       &:focus {
         outline: none;
-        border: 3px #00dbde solid;
+        border: 3px var(--border-active) solid;
       }
     }
 

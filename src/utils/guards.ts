@@ -15,6 +15,8 @@ export const isString = (data: unknown): data is string => typeof data === 'stri
 
 export const isObj = (data: unknown): data is object => !!data && typeof data === 'object';
 
+export const isBoolean = (data: unknown): data is boolean => typeof data === 'boolean';
+
 export const isTokenResponse = (data: unknown): data is TokenResponse =>
   isObj(data) && 'request_token' in data && isString(data.request_token);
 

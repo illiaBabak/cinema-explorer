@@ -14,6 +14,7 @@ import { Loader } from 'src/components/Loader';
 import { LoginInitialState } from 'src/reducers/loginReducer';
 import { getSessionId } from 'src/api/login';
 import { pageConfig } from 'src/config/pages';
+import ThemeBtn from 'src/components/ThemeBtn';
 
 const mapStateToProps = (state: { login: LoginInitialState }) => ({
   name: state.login.name,
@@ -68,30 +69,31 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
     } = this.props;
 
     return (
-      <div className='login-page w-100 h-100 d-flex justify-content-center align-items-center'>
-        <div className='form-wrapper p-1'>
+      <div className='login-page w-100 h-100 d-flex flex-column p-2'>
+        <ThemeBtn />
+        <div className='form-wrapper d-flex flex-column align-self-center m-auto p-1'>
           <form className='form d-flex flex-column align-items-center justify-content-between px-4 py-3 w-100 h-100'>
             <div className='text-center'>
-              <h2 className='mb-4'>Login</h2>
+              <h2 className='mb-4 text'>Login</h2>
               <div className='d-flex flex-row justify-content-between align-items-center my-4 w-100 px-4 mt-4'>
-                <p className='m-0 field-text'>Username</p>
+                <p className='m-0 field-text text'>Username</p>
                 <input
-                  className='field ms-2'
+                  className='field ms-2 text'
                   type='text'
                   value={name}
                   onChange={({ currentTarget: { value } }) => setName(value)}
                 />
               </div>
               <div className='d-flex flex-row justify-content-between align-items-center my-4 w-100 px-4 position-relative'>
-                <p className='m-0 field-text'>Password</p>
+                <p className='m-0 field-text text'>Password</p>
                 <input
-                  className='field ms-2'
+                  className='field ms-2 text'
                   type={shouldShowPassword ? 'text' : 'password'}
                   value={password}
                   onChange={({ currentTarget: { value } }) => setPassword(value)}
                 />
                 <img
-                  className='password-eye object-fit-contain position-absolute'
+                  className='password-eye rounded-circle object-fit-contain position-absolute'
                   src={shouldShowPassword ? 'images/visible_eye.png' : 'images/invisible_eye.png'}
                   alt='eye'
                   onClick={() => setShouldShowPassword(!shouldShowPassword)}
@@ -114,7 +116,7 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
                 />
               </div>
 
-              <div className='text-center mx-4 mt-3 mb-1'>
+              <div className='text-center mx-4 mt-3 mb-1 text'>
                 Don't have a TMDB account? <br />
                 <a className='link' href='https://www.themoviedb.org/signup'>
                   Create TMDB account

@@ -10,6 +10,7 @@ import {
 import { getSearchedMovies } from 'src/api/movie';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { MovieType } from 'src/types';
+import ThemeBtn from '../ThemeBtn';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
   searchedMovies: state.movie.searchedMovies,
@@ -44,7 +45,7 @@ class Header extends Component<ConnectedProps<typeof connector>> {
     const { setQuery, query, setSearchedMovies } = this.props;
 
     return (
-      <div className='header w-100 p-3'>
+      <div className='d-flex flex-row align-items-center justify-content-between header w-100 p-3'>
         <div className='input-wrapper position-relative d-flex align-items-center'>
           <input
             className='search-input fs-5 p-2'
@@ -75,6 +76,7 @@ class Header extends Component<ConnectedProps<typeof connector>> {
             </div>
           )}
         </div>
+        <ThemeBtn />
       </div>
     );
   }
