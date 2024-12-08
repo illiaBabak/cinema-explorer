@@ -1,10 +1,13 @@
 import { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { pageConfig } from 'src/config/pages';
+import FavouritePage from 'src/pages/FavouritePage';
 import LoginPage from 'src/pages/LoginPage';
 import MainPage from 'src/pages/MainPage';
 import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
+import WatchlistPage from 'src/pages/WatchlistPage';
 import { PageInitialStateType } from 'src/reducers/pageReducer';
 
 const mapStateToProps = (state: { page: PageInitialStateType }) => ({
@@ -47,16 +50,29 @@ class App extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
+    const {
+      start,
+      login,
+      redirect,
+      home,
+      myMovies: { favourite, watchlist },
+    } = pageConfig;
+
     return (
       <div className='main-container m-0 p-0'>
         <BrowserRouter>
           <Switch>
-            <Route exact path='/' component={StartPage} />
-            <Route path='/login' component={LoginPage} />
-            <Route path='/home' component={MainPage} />
-            <Route path='/redirect' component={RedirectPage} />
+            <Route exact path={start} component={StartPage} />
+            <Route path={login} component={LoginPage} />
+            <Route path={home} component={MainPage} />
+            <Route path={redirect} component={RedirectPage} />
+            <Route exact path='/my-movies'>
+              <Redirect to={favourite} />
+            </Route>
+            <Route exact path={favourite} component={FavouritePage} />
+            <Route exact path={watchlist} component={WatchlistPage} />
             <Route path='*'>
-              <Redirect to='/redirect' />
+              <Redirect to={pageConfig.redirect} />
             </Route>
           </Switch>
         </BrowserRouter>

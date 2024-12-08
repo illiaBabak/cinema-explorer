@@ -6,7 +6,7 @@ import { pageConfig } from 'src/config/pages';
 export class StartPage extends Component {
   render(): JSX.Element {
     return (
-      <div className='start-page d-flex flex-column w-100 h-100 p-2'>
+      <div className='start-page d-flex flex-column w-100 h-100 p-3'>
         <ThemeBtn />
         <div className='d-flex jusfity-content-center align-items-center flex-column align-self-center m-auto'>
           <div className='title-wrapper'>

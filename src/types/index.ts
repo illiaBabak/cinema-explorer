@@ -18,10 +18,12 @@ export type User = {
     };
   };
 
+  id: number;
   username: string;
 };
 
 export type MovieType = {
+  id: number;
   poster_path: string | null;
   genre_ids: number[];
   original_title: string;

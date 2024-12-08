@@ -69,7 +69,7 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
     } = this.props;
 
     return (
-      <div className='login-page w-100 h-100 d-flex flex-column p-2'>
+      <div className='login-page w-100 h-100 d-flex flex-column p-3'>
         <ThemeBtn />
         <div className='form-wrapper d-flex flex-column align-self-center m-auto p-1'>
           <form className='form d-flex flex-column align-items-center justify-content-between px-4 py-3 w-100 h-100'>

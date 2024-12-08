@@ -22,6 +22,44 @@
       font-size: 18px;
     }
 
+    .menu-btn {
+      width: 40px;
+      height: 40px;
+      right: -8px;
+      bottom: 0;
+      cursor: pointer;
+    }
+
+    .menu {
+      z-index: 1;
+      bottom: 36px;
+      color: #303030;
+
+      .option {
+        width: 190px;
+        height: 36px;
+        background-color: #ececec;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #cfcfcf;
+        }
+
+        .option-img {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      &.left-position {
+        right: 0;
+      }
+
+      &.right-position {
+        right: -50%;
+      }
+    }
+
     .genres {
       .genre {
         font-size: 14px;

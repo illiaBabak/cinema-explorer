@@ -10,6 +10,7 @@ import { User } from 'src/types';
 import { isString } from 'src/utils/guards';
 import LogoutWindow from '../LogoutWindow';
 import { pageConfig } from 'src/config/pages';
+import { NavLink } from 'react-router-dom';
 
 const mapStateToProps = (state: { login: LoginInitialState; user: UserInitialStateType }) => ({
   sessionId: state.login.sessionId,
@@ -72,15 +73,62 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
 
   render(): JSX.Element {
     const { user, setShouldShowLogoutWindow, shouldShowLogoutWindow } = this.props;
+    const { pathname } = window.location;
+
     const userImage = this.getUserImg();
+
+    const isHome = pathname.includes('home');
+    const isMyMovies = pathname.includes('my-movies');
+    const isFavourite = pathname.includes('favourite');
 
     return (
       <>
         {shouldShowLogoutWindow && <LogoutWindow />}
         <div className='sidebar d-flex flex-column justify-content-between align-items-start h-100 py-4 px-2'>
-          <div className='title-wrapper'>
-            <h1 className='title fw-bolder'>Cinema explorer</h1>
+          <div>
+            <div className='title-wrapper'>
+              <h1 className='title fw-bolder'>Cinema explorer</h1>
+            </div>
+            <div className='d-flex flex-column mt-4'>
+              <div className='d-flex w-100'>
+                <NavLink
+                  className={`${isHome ? 'selected' : ''} link rounded w-100 p-1 mt-1`}
+                  to={pageConfig.home}
+                >
+                  Home
+                </NavLink>
+              </div>
+              <div className='d-flex flex-column w-100'>
+                <NavLink
+                  to={pageConfig.myMovies.favourite}
+                  className={`${isMyMovies ? 'selected' : ''} link rounded w-100 p-1 mt-1`}
+                >
+                  My movies
+                </NavLink>
+                {isMyMovies && (
+                  <div className='d-flex flex-column'>
+                    <NavLink
+                      className={`${
+                        isFavourite ? 'selected' : ''
+                      } sub-link link rounded w-75 p-1 mt-1`}
+                      to={pageConfig.myMovies.favourite}
+                    >
+                      Favourites
+                    </NavLink>
+                    <NavLink
+                      className={`${
+                        !isFavourite ? 'selected' : ''
+                      } sub-link link rounded w-75 p-1 mt-1`}
+                      to={pageConfig.myMovies.watchlist}
+                    >
+                      Watchlist
+                    </NavLink>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+
           <div
             className='user d-flex flex-row align-items-center justify-content-start flex-wrap'
             onClick={() => setShouldShowLogoutWindow(true)}

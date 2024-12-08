@@ -17,6 +17,14 @@ export const MOVIE_SET_IS_LOADING = 'movie_set_is_loading';
 
 export const MOVIE_SET_GENRES = 'movie_set_genres';
 
+export const MOVIE_SET_FAVOURITE = 'movie_set_favourite';
+
+export const MOVIE_SET_WATCHLIST = 'movie_set_watchlist';
+
+export const MOVIE_SET_SHOULD_SHOW_MENU = 'movie_set_should_show_menu';
+
+export const MOVIE_SET_MENU_COORDS = 'movie_set_menu_coords';
+
 export type MovieAction =
   | { type: typeof MOVIE_SET_GENRES; payload: Genre[] }
   | { type: typeof MOVIE_SET_IS_LOADING; payload: boolean }
@@ -54,6 +62,22 @@ export type MovieAction =
   | {
       type: typeof MOVIE_SET_QUERY;
       payload: string;
+    }
+  | {
+      type: typeof MOVIE_SET_FAVOURITE;
+      payload: MovieType[];
+    }
+  | {
+      type: typeof MOVIE_SET_WATCHLIST;
+      payload: MovieType[];
+    }
+  | {
+      type: typeof MOVIE_SET_SHOULD_SHOW_MENU;
+      payload: number;
+    }
+  | {
+      type: typeof MOVIE_SET_MENU_COORDS;
+      payload: number;
     };
 
 export const movieSetPopularList = ({
@@ -134,4 +158,24 @@ export const movieSetIsLoading = (isLoading: boolean): MovieAction => ({
 export const movieSetGenres = (genres: Genre[]): MovieAction => ({
   type: MOVIE_SET_GENRES,
   payload: genres,
+});
+
+export const movieSetFavourite = (movies: MovieType[]): MovieAction => ({
+  type: MOVIE_SET_FAVOURITE,
+  payload: movies,
+});
+
+export const movieSetWatchlist = (movies: MovieType[]): MovieAction => ({
+  type: MOVIE_SET_WATCHLIST,
+  payload: movies,
+});
+
+export const movieSetShouldShowMenu = (movieId: number): MovieAction => ({
+  type: MOVIE_SET_SHOULD_SHOW_MENU,
+  payload: movieId,
+});
+
+export const movieSetMenuCoords = (rightCoords: number): MovieAction => ({
+  type: MOVIE_SET_MENU_COORDS,
+  payload: rightCoords,
 });

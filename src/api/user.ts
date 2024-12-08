@@ -11,7 +11,7 @@ export const getUser = async (sessionId: string): Promise<User | null> => {
   };
 
   const response = await fetch(
-    `https://api.themoviedb.org/3/account/18387048?session_id=${sessionId}`,
+    `https://api.themoviedb.org/3/account/account_id?session_id=${sessionId}`,
     options
   );
 

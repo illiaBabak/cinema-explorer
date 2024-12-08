@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import {
   MovieAction,
   movieSetCurrentCategory,
+  movieSetFavourite,
   movieSetGenres,
   movieSetIsLoading,
   movieSetPopularList,
@@ -11,19 +12,21 @@ import {
   movieSetSearchedList,
   movieSetTopRatedList,
   movieSetUpComingList,
+  movieSetWatchlist,
 } from 'src/actions/movieActions';
-import { getGenres, getMovies } from 'src/api/movie';
+import { getFavouriteOrWatchlistMovies, getGenres, getMovies } from 'src/api/movie';
 import Header from 'src/components/Header';
 import { Loader } from 'src/components/Loader';
 import Movie from 'src/components/Movie';
 import SideBar from 'src/components/SideBar';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
+import { UserInitialStateType } from 'src/reducers/userReducer';
 import { Genre, MovieType } from 'src/types';
 import { capitalize } from 'src/utils/capitalize';
 import { MOVIE_CATEGORIES, OBSERVER_OPTIONS } from 'src/utils/constants';
 import { removeUnderlines } from 'src/utils/removeUnderlines';
 
-const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
+const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   upComingMovies: state.movie.upComingMovies,
   topRatedMovies: state.movie.topRatedMovies,
   popularMovies: state.movie.popularMovies,
@@ -31,6 +34,7 @@ const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
   currentCategory: state.movie.currentCategory,
   isLoadingMovies: state.movie.isLoading,
   query: state.movie.query,
+  accountId: state.user.user?.id ?? 0,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
@@ -68,6 +72,8 @@ const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setMovieGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
   setQuery: (query: string) => dispatch(movieSetQuery(query)),
+  setFavouriteMovies: (movies: MovieType[]) => dispatch(movieSetFavourite(movies)),
+  setWatchlistMovies: (movies: MovieType[]) => dispatch(movieSetWatchlist(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -87,6 +93,9 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       setPopularMovies,
       topRatedMovies,
       setTopRatedMovies,
+      accountId,
+      setFavouriteMovies,
+      setWatchlistMovies,
     } = this.props;
 
     setCurrentCategory(category);
@@ -117,6 +126,12 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
         maxPages,
       });
     }
+
+    const favouriteMovies = await getFavouriteOrWatchlistMovies(accountId, true);
+    const watchlistMovies = await getFavouriteOrWatchlistMovies(accountId, false);
+
+    setFavouriteMovies(favouriteMovies);
+    setWatchlistMovies(watchlistMovies);
 
     setIsLoadingMovies(false);
   };

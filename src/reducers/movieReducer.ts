@@ -1,12 +1,16 @@
 import {
   MOVIE_SET_CURRENT_CATEGORY,
+  MOVIE_SET_FAVOURITE,
   MOVIE_SET_GENRES,
   MOVIE_SET_IS_LOADING,
+  MOVIE_SET_MENU_COORDS,
   MOVIE_SET_POPULAR_LIST,
   MOVIE_SET_QUERY,
   MOVIE_SET_SEARCHED_LIST,
+  MOVIE_SET_SHOULD_SHOW_MENU,
   MOVIE_SET_TOP_RATED_LIST,
   MOVIE_SET_UPCOMING_LIST,
+  MOVIE_SET_WATCHLIST,
   MovieAction,
 } from 'src/actions/movieActions';
 import { MovieType } from 'src/types';
@@ -37,6 +41,10 @@ export type MovieInitialStateType = {
   genres: {
     [k: string]: string;
   };
+  favouriteMovies: MovieType[];
+  watchlistMovies: MovieType[];
+  shouldShowMenu: number;
+  menuCoords: number;
 };
 
 export const movieInitialState: MovieInitialStateType = {
@@ -63,6 +71,10 @@ export const movieInitialState: MovieInitialStateType = {
   currentCategory: 'upcoming',
   isLoading: false,
   genres: {},
+  favouriteMovies: [],
+  watchlistMovies: [],
+  shouldShowMenu: 0,
+  menuCoords: 0,
 };
 
 export const movieReducer = (
@@ -137,6 +149,34 @@ export const movieReducer = (
       return {
         ...state,
         genres: Object.fromEntries(action.payload.map((genre) => [genre.id, genre.name])),
+      };
+    }
+
+    case MOVIE_SET_FAVOURITE: {
+      return {
+        ...state,
+        favouriteMovies: action.payload,
+      };
+    }
+
+    case MOVIE_SET_WATCHLIST: {
+      return {
+        ...state,
+        watchlistMovies: action.payload,
+      };
+    }
+
+    case MOVIE_SET_SHOULD_SHOW_MENU: {
+      return {
+        ...state,
+        shouldShowMenu: action.payload,
+      };
+    }
+
+    case MOVIE_SET_MENU_COORDS: {
+      return {
+        ...state,
+        menuCoords: action.payload,
       };
     }
 

@@ -31,6 +31,8 @@ export const isUser = (data: unknown): data is User =>
   'avatar' in data &&
   isObj(data.avatar) &&
   'gravatar' in data.avatar &&
+  'id' in data &&
+  isNumber(data.id) &&
   isObj(data.avatar.gravatar) &&
   'hash' in data.avatar.gravatar &&
   isString(data.avatar.gravatar.hash) &&
@@ -46,6 +48,7 @@ export const isMovie = (data: unknown): data is MovieType =>
   'poster_path' in data &&
   'genre_ids' in data &&
   'original_title' in data &&
+  'id' in data &&
   (isString(data.poster_path) || !data.poster_path) &&
   isString(data.original_title) &&
   Array.isArray(data.genre_ids) &&
