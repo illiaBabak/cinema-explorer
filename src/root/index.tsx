@@ -5,6 +5,7 @@ import { pageConfig } from 'src/config/pages';
 import FavouritePage from 'src/pages/FavouritePage';
 import LoginPage from 'src/pages/LoginPage';
 import MainPage from 'src/pages/MainPage';
+import MoviePage from 'src/pages/MoviePage';
 import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
 import WatchlistPage from 'src/pages/WatchlistPage';
@@ -56,10 +57,11 @@ class App extends Component<ConnectedProps<typeof connector>> {
       redirect,
       home,
       myMovies: { favourite, watchlist },
+      movie,
     } = pageConfig;
 
     return (
-      <div className='main-container m-0 p-0'>
+      <div className='main-container m-0 p-0 d-flex'>
         <BrowserRouter>
           <Switch>
             <Route exact path={start} component={StartPage} />
@@ -71,6 +73,7 @@ class App extends Component<ConnectedProps<typeof connector>> {
             </Route>
             <Route exact path={favourite} component={FavouritePage} />
             <Route exact path={watchlist} component={WatchlistPage} />
+            <Route path={movie} component={MoviePage} />
             <Route path='*'>
               <Redirect to={pageConfig.redirect} />
             </Route>

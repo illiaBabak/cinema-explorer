@@ -2,6 +2,12 @@
   width: 270px;
   height: 380px;
   background-image: var(--gradient);
+  cursor: pointer;
+
+  &:hover {
+    background-image: none;
+    background-color: var(--border-active);
+  }
 
   .movie-card {
     background-color: var(--card);
@@ -31,12 +37,12 @@
     }
 
     .menu {
-      z-index: 1;
+      z-index: 5;
       bottom: 36px;
       color: #303030;
 
       .option {
-        width: 190px;
+        width: 240px;
         height: 36px;
         background-color: #ececec;
         cursor: pointer;

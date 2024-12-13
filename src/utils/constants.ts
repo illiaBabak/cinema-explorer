@@ -1,4 +1,4 @@
-export const MOVIE_CATEGORIES = ['upcoming', 'top_rated', 'popular'] as const;
+export const MOVIE_CATEGORIES = ['upcoming', 'top_rated', 'popular'];
 
 export const OBSERVER_OPTIONS = {
   root: null,

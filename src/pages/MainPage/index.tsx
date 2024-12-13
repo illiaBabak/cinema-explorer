@@ -14,18 +14,28 @@ import {
   movieSetUpComingList,
   movieSetWatchlist,
 } from 'src/actions/movieActions';
-import { getFavouriteOrWatchlistMovies, getGenres, getMovies } from 'src/api/movie';
+import {
+  getFavouriteOrWatchlistMovies,
+  getGenres,
+  getMovies,
+  getSearchedMovies,
+} from 'src/api/movie';
 import Header from 'src/components/Header';
 import { Loader } from 'src/components/Loader';
 import Movie from 'src/components/Movie';
 import SideBar from 'src/components/SideBar';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Genre, MovieType } from 'src/types';
+import { Genre, MovieIncomplete } from 'src/types';
 import { capitalize } from 'src/utils/capitalize';
 import { MOVIE_CATEGORIES, OBSERVER_OPTIONS } from 'src/utils/constants';
 import { removeUnderlines } from 'src/utils/removeUnderlines';
 
+type UpdateMoviesProps = {
+  movies: MovieIncomplete[];
+  page: number;
+  maxPages: number;
+};
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   upComingMovies: state.movie.upComingMovies,
   topRatedMovies: state.movie.topRatedMovies,
@@ -38,42 +48,28 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setUpComingMovies: ({
+  setUpComingMovies: ({ movies, page, maxPages }: UpdateMoviesProps) =>
+    dispatch(movieSetUpComingList({ movies, page, maxPages })),
+  setTopRatedMovies: ({ movies, page, maxPages }: UpdateMoviesProps) =>
+    dispatch(movieSetTopRatedList({ movies, page, maxPages })),
+  setPopularMovies: ({ movies, page, maxPages }: UpdateMoviesProps) =>
+    dispatch(movieSetPopularList({ movies, page, maxPages })),
+  setSearchedMovies: ({
     movies,
     page,
     maxPages,
   }: {
-    movies: MovieType[];
+    movies: MovieIncomplete[];
     page: number;
     maxPages: number;
-  }) => dispatch(movieSetUpComingList({ movies, page, maxPages })),
-  setTopRatedMovies: ({
-    movies,
-    page,
-    maxPages,
-  }: {
-    movies: MovieType[];
-    page: number;
-    maxPages: number;
-  }) => dispatch(movieSetTopRatedList({ movies, page, maxPages })),
-  setPopularMovies: ({
-    movies,
-    page,
-    maxPages,
-  }: {
-    movies: MovieType[];
-    page: number;
-    maxPages: number;
-  }) => dispatch(movieSetPopularList({ movies, page, maxPages })),
-  setSearchedMovies: ({ movies }: { movies: MovieType[] }) =>
-    dispatch(movieSetSearchedList({ movies })),
+  }) => dispatch(movieSetSearchedList({ movies, page, maxPages })),
   setCurrentCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
     dispatch(movieSetCurrentCategory(category)),
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setMovieGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
   setQuery: (query: string) => dispatch(movieSetQuery(query)),
-  setFavouriteMovies: (movies: MovieType[]) => dispatch(movieSetFavourite(movies)),
-  setWatchlistMovies: (movies: MovieType[]) => dispatch(movieSetWatchlist(movies)),
+  setFavouriteMovies: (movies: MovieIncomplete[]) => dispatch(movieSetFavourite(movies)),
+  setWatchlistMovies: (movies: MovieIncomplete[]) => dispatch(movieSetWatchlist(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -85,7 +81,6 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
 
   setMovies = async (category: (typeof MOVIE_CATEGORIES)[number]): Promise<void> => {
     const {
-      setCurrentCategory,
       setIsLoadingMovies,
       upComingMovies,
       setUpComingMovies,
@@ -96,12 +91,22 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       accountId,
       setFavouriteMovies,
       setWatchlistMovies,
+      searchedMovies,
+      setSearchedMovies,
+      query,
     } = this.props;
 
-    setCurrentCategory(category);
     setIsLoadingMovies(true);
 
-    if (category === 'upcoming' && upComingMovies.page <= upComingMovies.maxPages) {
+    if (searchedMovies.movies.length && searchedMovies.page <= searchedMovies.maxPages) {
+      const { movies, maxPages } = await getSearchedMovies(query, searchedMovies.page);
+
+      setSearchedMovies({
+        movies: [...searchedMovies.movies, ...movies],
+        page: searchedMovies.page,
+        maxPages,
+      });
+    } else if (category === 'upcoming' && upComingMovies.page <= upComingMovies.maxPages) {
       const { movies, maxPages } = await getMovies(category, upComingMovies.page);
 
       setUpComingMovies({
@@ -151,9 +156,17 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       setUpComingMovies,
       setPopularMovies,
       setTopRatedMovies,
+      searchedMovies,
+      setSearchedMovies,
     } = this.props;
 
-    if (currentCategory === 'upcoming') {
+    if (searchedMovies.movies.length) {
+      setSearchedMovies({
+        movies: [...searchedMovies.movies],
+        page: ++searchedMovies.page,
+        maxPages: searchedMovies.maxPages,
+      });
+    } else if (currentCategory === 'upcoming') {
       setUpComingMovies({
         movies: [...upComingMovies.movies],
         page: ++upComingMovies.page,
@@ -188,15 +201,31 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
     if (el) this.observer.observe(el);
   };
 
+  handleChangeCategory = (category: (typeof MOVIE_CATEGORIES)[number]) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('category', category);
+    params.delete('query');
+
+    this.props.setCurrentCategory(category);
+    this.setMovies(category);
+    this.props.setSearchedMovies({
+      movies: [],
+      page: 1,
+      maxPages: 1,
+    });
+  };
+
   componentDidMount(): void {
     if (this.observerRef.current && !this.isInitialized)
       setTimeout(() => this.handleObserver(this.observerRef.current), 0);
 
     if (!this.isInitialized) return;
 
+    const category = new URLSearchParams(window.location.search).get('category') ?? 'upcoming';
+
     this.isInitialized = false;
     this.setGenres();
-    this.setMovies(this.props.currentCategory);
+    this.handleChangeCategory(category);
   }
 
   componentWillUnmount(): void {
@@ -211,13 +240,11 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       popularMovies,
       isLoadingMovies,
       searchedMovies,
-      setSearchedMovies,
-      setQuery,
     } = this.props;
 
     return (
       <div className='main-page d-flex flex-row justify-content-start w-100 h-100'>
-        <SideBar />
+        <SideBar isFullView={true} />
         <div className='d-flex flex-column justify-content-start align-items-center content h-100'>
           <div className='main-content d-flex flex-column justify-content-start align-items-start w-100 h-100 position-relative'>
             <Header />
@@ -231,11 +258,8 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
                   } text-white d-flex justify-content-center align-items-center m-3 p-1 rounded`}
                   key={`${category}-${index}-category`}
                   onClick={() => {
-                    this.setMovies(category);
-                    setQuery('');
-                    setSearchedMovies({
-                      movies: [],
-                    });
+                    this.handleChangeCategory(category);
+                    this.props.setQuery('');
                   }}
                 >
                   {removeUnderlines(capitalize(category))}

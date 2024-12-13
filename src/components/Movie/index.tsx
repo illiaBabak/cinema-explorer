@@ -1,72 +1,88 @@
 import { Component, createRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-  MovieAction,
-  movieSetFavourite,
-  movieSetMenuCoords,
-  movieSetShouldShowMenu,
-  movieSetWatchlist,
-} from 'src/actions/movieActions';
+import { MovieAction, movieSetFavourite, movieSetWatchlist } from 'src/actions/movieActions';
 import { addOrDeleteFavorite, addOrDeleteToWatchlist } from 'src/api/movie';
+import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { MovieType } from 'src/types';
+import { MovieIncomplete } from 'src/types';
 
 type Props = {
-  movie: MovieType;
+  movie: MovieIncomplete;
 };
 
-const mapStateToProps = (
-  state: { movie: MovieInitialStateType; user: UserInitialStateType },
-  props: Props
-) => ({
+type State = {
+  menuOptions: {
+    position: 'left' | 'right';
+    shouldShowMenu: boolean;
+  };
+};
+
+const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   genres: state.movie.genres,
-  shouldShowMenu: state.movie.shouldShowMenu === props.movie.id,
-  menuCoords: state.movie.menuCoords,
   accountID: state.user.user?.id ?? 0,
   favouriteMovies: state.movie.favouriteMovies,
   watchlistMovies: state.movie.watchlistMovies,
+  currentCategory: state.movie.currentCategory,
+  query: state.movie.query,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setShouldShowMenu: (movieId: number) => dispatch(movieSetShouldShowMenu(movieId)),
-  setMenuCoords: (coords: number) => dispatch(movieSetMenuCoords(coords)),
-  setFavouriteMovies: (movies: MovieType[]) => dispatch(movieSetFavourite(movies)),
-  setWatchlistMovies: (movies: MovieType[]) => dispatch(movieSetWatchlist(movies)),
+  setFavouriteMovies: (movies: MovieIncomplete[]) => dispatch(movieSetFavourite(movies)),
+  setWatchlistMovies: (movies: MovieIncomplete[]) => dispatch(movieSetWatchlist(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 class Movie extends Component<ConnectedProps<typeof connector> & Props> {
+  state: State = {
+    menuOptions: {
+      position: 'right',
+      shouldShowMenu: false,
+    },
+  };
+
   menuRef = createRef<HTMLDivElement>();
 
-  componentDidUpdate(prevProps: ConnectedProps<typeof connector> & Props) {
-    if (!prevProps.shouldShowMenu && this.props.shouldShowMenu) {
-      const menuCoordinates = this.menuRef.current?.getBoundingClientRect().right ?? 0;
+  handleShowMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
 
-      if (menuCoordinates) this.props.setMenuCoords(menuCoordinates);
+    if (this.state.menuOptions.shouldShowMenu) {
+      this.setState({
+        menuOptions: {
+          shouldShowMenu: false,
+        },
+      });
+      return;
     }
-  }
 
-  handleShowMenu = (movieId: number) => {
-    this.props.setShouldShowMenu(this.props.shouldShowMenu ? 0 : movieId);
-    if (this.props.menuCoords) this.props.setMenuCoords(0);
+    const btnCoords = e.currentTarget.getBoundingClientRect().left ?? 0;
+
+    const menuPosition = window.innerWidth < btnCoords + 240 ? 'left' : 'right'; //240px = menu width
+
+    this.setState({
+      menuOptions: {
+        position: menuPosition,
+        shouldShowMenu: true,
+      },
+    });
   };
 
   render(): JSX.Element {
     const {
       movie,
       genres,
-      shouldShowMenu,
-      menuCoords,
       accountID,
       favouriteMovies,
       setFavouriteMovies,
       watchlistMovies,
       setWatchlistMovies,
+      currentCategory,
+      query,
     } = this.props;
-    const positionClass = window.innerWidth < menuCoords ? 'left-position' : 'right-position';
+
+    const positionClass = `${this.state.menuOptions.position}-position`;
 
     const isFavouriteMovie = favouriteMovies.some(
       (favouriteMovie) => favouriteMovie.id === movie.id
@@ -77,7 +93,16 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
     );
 
     return (
-      <div className='movie-card-wrapper p-2 m-3 rounded'>
+      <div
+        className='movie-card-wrapper p-2 m-3 rounded'
+        onClick={() =>
+          (window.location.href = `${pageConfig.movie}?id=${
+            movie.id
+          }&category=${currentCategory}&previous=${window.location.pathname}${
+            query ? `&query=${query}` : ''
+          }`)
+        }
+      >
         <div className='movie-card d-flex flex-column align-items-center w-100 h-100 p-3 position-relative'>
           <img
             className='poster object-fit-contain rounded'
@@ -96,14 +121,16 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
             ))}
           </div>
 
-          {shouldShowMenu && (
+          {this.state.menuOptions.shouldShowMenu && (
             <div
               className={`d-flex flex-column position-absolute menu ${positionClass}`}
               ref={this.menuRef}
             >
               <div
-                className='option d-flex flex-row align-items-center justify-content-around p-1 rounded-top'
-                onClick={() => {
+                className='option d-flex flex-row align-items-center justify-content-start p-1 rounded-top'
+                onClick={(e) => {
+                  e.stopPropagation();
+
                   addOrDeleteFavorite(movie.id, !isFavouriteMovie, accountID);
                   setFavouriteMovies(
                     !isFavouriteMovie
@@ -117,11 +144,13 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
                   src={`${isFavouriteMovie ? '/images/filled-heart.png' : '/images/heart.png'}`}
                   alt='heart'
                 />
-                <p className='m-0'>{isFavouriteMovie ? 'Delete from' : 'Add to'} favourites</p>
+                <p className='m-0 ms-2'>{isFavouriteMovie ? 'Delete from' : 'Add to'} favourites</p>
               </div>
               <div
-                className='option d-flex flex-row align-items-center justify-content-around p-1 rounded-bottom'
-                onClick={() => {
+                className='option d-flex flex-row align-items-center justify-content-start p-1 rounded-bottom'
+                onClick={(e) => {
+                  e.stopPropagation();
+
                   addOrDeleteToWatchlist(movie.id, !isWatchlistMovie, accountID);
                   setWatchlistMovies(
                     !isWatchlistMovie
@@ -135,7 +164,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
                   src={`${isWatchlistMovie ? '/images/remove.png' : '/images/watchlist.png'}`}
                   alt='list'
                 />
-                <p className='m-0'>{isWatchlistMovie ? 'Delete from' : 'Add to'} watchlist</p>
+                <p className='m-0 ms-2'>{isWatchlistMovie ? 'Delete from' : 'Add to'} watchlist</p>
               </div>
             </div>
           )}
@@ -144,7 +173,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
             className='menu-btn object-fit-contain position-absolute'
             src='/images/menu.png'
             alt='dots'
-            onClick={() => this.handleShowMenu(movie.id)}
+            onClick={(e) => this.handleShowMenu(e)}
           />
         </div>
       </div>

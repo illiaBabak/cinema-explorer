@@ -1,4 +1,4 @@
-import { Genre, MovieType } from 'src/types';
+import { Credits, Genre, MovieDetails, MovieIncomplete } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 
 export const MOVIE_SET_POPULAR_LIST = 'movie_set_popular_list';
@@ -21,9 +21,9 @@ export const MOVIE_SET_FAVOURITE = 'movie_set_favourite';
 
 export const MOVIE_SET_WATCHLIST = 'movie_set_watchlist';
 
-export const MOVIE_SET_SHOULD_SHOW_MENU = 'movie_set_should_show_menu';
+export const MOVIE_SET_FULL_INFO = 'movie_set_full_info';
 
-export const MOVIE_SET_MENU_COORDS = 'movie_set_menu_coords';
+export const MOVIE_SET_CREDITS = 'movie_set_credits';
 
 export type MovieAction =
   | { type: typeof MOVIE_SET_GENRES; payload: Genre[] }
@@ -32,7 +32,7 @@ export type MovieAction =
   | {
       type: typeof MOVIE_SET_TOP_RATED_LIST;
       payload: {
-        movies: MovieType[];
+        movies: MovieIncomplete[];
         page: number;
         maxPages: number;
       };
@@ -40,7 +40,7 @@ export type MovieAction =
   | {
       type: typeof MOVIE_SET_POPULAR_LIST;
       payload: {
-        movies: MovieType[];
+        movies: MovieIncomplete[];
         page: number;
         maxPages: number;
       };
@@ -48,7 +48,7 @@ export type MovieAction =
   | {
       type: typeof MOVIE_SET_UPCOMING_LIST;
       payload: {
-        movies: MovieType[];
+        movies: MovieIncomplete[];
         page: number;
         maxPages: number;
       };
@@ -56,7 +56,9 @@ export type MovieAction =
   | {
       type: typeof MOVIE_SET_SEARCHED_LIST;
       payload: {
-        movies: MovieType[];
+        movies: MovieIncomplete[];
+        page: number;
+        maxPages: number;
       };
     }
   | {
@@ -65,19 +67,19 @@ export type MovieAction =
     }
   | {
       type: typeof MOVIE_SET_FAVOURITE;
-      payload: MovieType[];
+      payload: MovieIncomplete[];
     }
   | {
       type: typeof MOVIE_SET_WATCHLIST;
-      payload: MovieType[];
+      payload: MovieIncomplete[];
     }
   | {
-      type: typeof MOVIE_SET_SHOULD_SHOW_MENU;
-      payload: number;
+      type: typeof MOVIE_SET_FULL_INFO;
+      payload: MovieDetails | null;
     }
   | {
-      type: typeof MOVIE_SET_MENU_COORDS;
-      payload: number;
+      type: typeof MOVIE_SET_CREDITS;
+      payload: Credits | null;
     };
 
 export const movieSetPopularList = ({
@@ -85,7 +87,7 @@ export const movieSetPopularList = ({
   page,
   maxPages,
 }: {
-  movies: MovieType[];
+  movies: MovieIncomplete[];
   page: number;
   maxPages: number;
 }): MovieAction => ({
@@ -102,7 +104,7 @@ export const movieSetTopRatedList = ({
   page,
   maxPages,
 }: {
-  movies: MovieType[];
+  movies: MovieIncomplete[];
   page: number;
   maxPages: number;
 }): MovieAction => ({
@@ -119,7 +121,7 @@ export const movieSetUpComingList = ({
   page,
   maxPages,
 }: {
-  movies: MovieType[];
+  movies: MovieIncomplete[];
   page: number;
   maxPages: number;
 }): MovieAction => ({
@@ -131,10 +133,20 @@ export const movieSetUpComingList = ({
   },
 });
 
-export const movieSetSearchedList = ({ movies }: { movies: MovieType[] }): MovieAction => ({
+export const movieSetSearchedList = ({
+  movies,
+  page,
+  maxPages,
+}: {
+  movies: MovieIncomplete[];
+  page: number;
+  maxPages: number;
+}): MovieAction => ({
   type: MOVIE_SET_SEARCHED_LIST,
   payload: {
     movies,
+    page,
+    maxPages,
   },
 });
 
@@ -160,22 +172,22 @@ export const movieSetGenres = (genres: Genre[]): MovieAction => ({
   payload: genres,
 });
 
-export const movieSetFavourite = (movies: MovieType[]): MovieAction => ({
+export const movieSetFavourite = (movies: MovieIncomplete[]): MovieAction => ({
   type: MOVIE_SET_FAVOURITE,
   payload: movies,
 });
 
-export const movieSetWatchlist = (movies: MovieType[]): MovieAction => ({
+export const movieSetWatchlist = (movies: MovieIncomplete[]): MovieAction => ({
   type: MOVIE_SET_WATCHLIST,
   payload: movies,
 });
 
-export const movieSetShouldShowMenu = (movieId: number): MovieAction => ({
-  type: MOVIE_SET_SHOULD_SHOW_MENU,
-  payload: movieId,
+export const movieSetFullInfo = (movieInfo: MovieDetails | null): MovieAction => ({
+  type: MOVIE_SET_FULL_INFO,
+  payload: movieInfo,
 });
 
-export const movieSetMenuCoords = (rightCoords: number): MovieAction => ({
-  type: MOVIE_SET_MENU_COORDS,
-  payload: rightCoords,
+export const movieSetCredits = (credits: Credits | null): MovieAction => ({
+  type: MOVIE_SET_CREDITS,
+  payload: credits,
 });

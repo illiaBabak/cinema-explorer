@@ -10,14 +10,22 @@
   overflow: hidden auto;
 }
 
-.scroll-container::-webkit-scrollbar {
-  width: 10px;
+.scroll-container-x {
+  overflow: auto hidden;
 }
 
-.scroll-container::-webkit-scrollbar-track {
+.scroll-container::-webkit-scrollbar,
+.scroll-container-x::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track,
+.scroll-container-x::-webkit-scrollbar-track {
   background: #a3a3a3;
 }
 
-.scroll-container::-webkit-scrollbar-thumb {
+.scroll-container::-webkit-scrollbar-thumb,
+.scroll-container-x::-webkit-scrollbar-thumb {
   background-color: #505050;
 }

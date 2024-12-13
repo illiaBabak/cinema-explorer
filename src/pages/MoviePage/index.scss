@@ -1,0 +1,49 @@
+.movie-page {
+  width: calc(100% - 46px); //46px = sidebar width
+
+  .background {
+    width: calc(100% - 50px); //50px = sidebar width + paddings
+    filter: grayscale(5%) brightness(30%) blur(0.8px);
+  }
+
+  .loader {
+    left: 50%;
+    top: 50%;
+  }
+
+  .content {
+    width: calc(100% - 50px); //50px = sidebar width + paddings
+    z-index: 1;
+
+    .breadcrumb {
+      flex-wrap: nowrap;
+
+      .item a,
+      .item.active,
+      .item.active:before {
+        color: #fff;
+      }
+    }
+
+    .casts-container {
+      .cast {
+        width: 200px;
+        height: 220px;
+
+        .cast-img {
+          width: 110px;
+          height: 110px;
+        }
+
+        .character {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .poster {
+    width: 400px;
+    height: 650px;
+  }
+}

@@ -12,7 +12,7 @@ import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Genre, MovieType } from 'src/types';
+import { Genre, MovieIncomplete } from 'src/types';
 import { getFavouriteOrWatchlistMovies, getGenres } from 'src/api/movie';
 import { Loader } from 'src/components/Loader';
 
@@ -23,7 +23,7 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setWatchlistMovies: (movies: MovieType[]) => dispatch(movieSetWatchlist(movies)),
+  setWatchlistMovies: (movies: MovieIncomplete[]) => dispatch(movieSetWatchlist(movies)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
 });
@@ -60,7 +60,7 @@ class WatchlistPage extends Component<ConnectedProps<typeof connector>> {
 
     return (
       <div className='watchlist-page d-flex flex-row justify-content-start w-100 h-100'>
-        <SideBar />
+        <SideBar isFullView={true} />
 
         <div className='d-flex flex-column w-100 h-100 p-2'>
           <div className='m-2 theme-btn-wrapper'>

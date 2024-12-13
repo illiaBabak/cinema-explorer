@@ -7,6 +7,7 @@ class PageConfig {
     favourite: '/my-movies/favourite',
     watchlist: '/my-movies/watchlist',
   };
+  movie = '/movie';
 }
 
 export const pageConfig = new PageConfig();

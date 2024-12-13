@@ -25,12 +25,27 @@ export type User = {
 export type MovieType = {
   id: number;
   poster_path: string | null;
-  genre_ids: number[];
   original_title: string;
+  backdrop_path: string | null;
+  overview: string;
+  release_date: string;
+};
+
+export type MovieIncomplete = MovieType & {
+  genre_ids: number[];
+};
+
+export type MovieDetails = MovieType & {
+  runtime: number;
+  status: string;
+  genres: {
+    id: number;
+    name: string;
+  }[];
 };
 
 export type MovieResponse = {
-  results: MovieType[];
+  results: MovieIncomplete[];
   total_pages: number;
 };
 
@@ -41,4 +56,14 @@ export type Genre = {
 
 export type GenresResponse = {
   genres: Genre[];
+};
+
+export type CastEl = {
+  name: string;
+  profile_path: string | null;
+  character: string;
+};
+
+export type Credits = {
+  cast: CastEl[];
 };

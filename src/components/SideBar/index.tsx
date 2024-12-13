@@ -11,11 +11,22 @@ import { isString } from 'src/utils/guards';
 import LogoutWindow from '../LogoutWindow';
 import { pageConfig } from 'src/config/pages';
 import { NavLink } from 'react-router-dom';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { PageInitialStateType } from 'src/reducers/pageReducer';
 
-const mapStateToProps = (state: { login: LoginInitialState; user: UserInitialStateType }) => ({
+type Props = {
+  isFullView: boolean;
+};
+
+const mapStateToProps = (state: {
+  login: LoginInitialState;
+  user: UserInitialStateType;
+  page: PageInitialStateType;
+}) => ({
   sessionId: state.login.sessionId,
   user: state.user.user,
   shouldShowLogoutWindow: state.user.shouldShowLogoutWindow,
+  isLightTheme: state.page.isLightTheme,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<LoginAction | UserAction>) => ({
@@ -27,7 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch<LoginAction | UserAction>) => ({
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-class SideBar extends Component<ConnectedProps<typeof connector>> {
+class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
   isInitialized = false;
 
   getUserInfo = async (sessionId: string) => {
@@ -72,7 +83,8 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
-    const { user, setShouldShowLogoutWindow, shouldShowLogoutWindow } = this.props;
+    const { user, setShouldShowLogoutWindow, shouldShowLogoutWindow, isFullView, isLightTheme } =
+      this.props;
     const { pathname } = window.location;
 
     const userImage = this.getUserImg();
@@ -84,26 +96,60 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
     return (
       <>
         {shouldShowLogoutWindow && <LogoutWindow />}
-        <div className='sidebar d-flex flex-column justify-content-between align-items-start h-100 py-4 px-2'>
+        <div
+          className={`sidebar d-flex flex-column justify-content-between h-100 py-4 ${
+            isLightTheme ? 'light-theme' : 'dark-theme'
+          } ${
+            isFullView
+              ? 'full-view px-2  align-items-start'
+              : 'shorter-view align-items-center pe-1'
+          }`}
+        >
           <div>
             <div className='title-wrapper'>
-              <h1 className='title fw-bolder'>Cinema explorer</h1>
+              <h1 className={`title fw-bolder ${isFullView ? '' : 'text-center'}`}>
+                {isFullView ? 'Cinema explorer' : 'C'}
+              </h1>
             </div>
             <div className='d-flex flex-column mt-4'>
               <div className='d-flex w-100'>
                 <NavLink
-                  className={`${isHome ? 'selected' : ''} link rounded w-100 p-1 mt-1`}
+                  className={`${isHome ? 'selected' : ''} link rounded ${
+                    isFullView ? 'w-100 p-1' : 'ms-1'
+                  } mt-1`}
                   to={pageConfig.home}
                 >
-                  Home
+                  {isFullView ? (
+                    'Home'
+                  ) : (
+                    <OverlayTrigger overlay={<Tooltip>Home</Tooltip>} placement={'right'}>
+                      <img
+                        className='object-fit-contain link-img p-1 rounded'
+                        src='/images/home.png'
+                        alt='icon'
+                      />
+                    </OverlayTrigger>
+                  )}
                 </NavLink>
               </div>
               <div className='d-flex flex-column w-100'>
                 <NavLink
                   to={pageConfig.myMovies.favourite}
-                  className={`${isMyMovies ? 'selected' : ''} link rounded w-100 p-1 mt-1`}
+                  className={`${isMyMovies ? 'selected' : ''} link rounded ${
+                    isFullView ? 'w-100 p-1' : 'ms-1'
+                  } mt-1`}
                 >
-                  My movies
+                  {isFullView ? (
+                    'My movies'
+                  ) : (
+                    <OverlayTrigger overlay={<Tooltip>My movies</Tooltip>} placement={'right'}>
+                      <img
+                        src='/images/movie.png'
+                        alt='icon'
+                        className='object-fit-contain link-img p-1 rounded'
+                      />
+                    </OverlayTrigger>
+                  )}
                 </NavLink>
                 {isMyMovies && (
                   <div className='d-flex flex-column'>
@@ -113,7 +159,7 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
                       } sub-link link rounded w-75 p-1 mt-1`}
                       to={pageConfig.myMovies.favourite}
                     >
-                      Favourites
+                      {isFullView ? 'Favourites' : 'F'}
                     </NavLink>
                     <NavLink
                       className={`${
@@ -121,7 +167,7 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
                       } sub-link link rounded w-75 p-1 mt-1`}
                       to={pageConfig.myMovies.watchlist}
                     >
-                      Watchlist
+                      {isFullView ? 'Watchlist' : 'W'}
                     </NavLink>
                   </div>
                 )}
@@ -144,8 +190,7 @@ class SideBar extends Component<ConnectedProps<typeof connector>> {
                 <p className='m-0 fs-2 text-white'>{user?.username.slice(0, 1).toUpperCase()}</p>
               </div>
             )}
-
-            <p className='m-0 ms-1 username'>{user?.username}</p>
+            {isFullView && <p className='m-0 ms-1 username'>{user?.username}</p>}
           </div>
         </div>
       </>

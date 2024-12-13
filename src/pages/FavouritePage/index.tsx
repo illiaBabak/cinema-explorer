@@ -14,7 +14,7 @@ import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Genre, MovieType } from 'src/types';
+import { Genre, MovieIncomplete } from 'src/types';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   favouriteMovies: state.movie.favouriteMovies,
@@ -23,7 +23,7 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setFavouriteMovies: (movies: MovieType[]) => dispatch(movieSetFavourite(movies)),
+  setFavouriteMovies: (movies: MovieIncomplete[]) => dispatch(movieSetFavourite(movies)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
 });
@@ -60,10 +60,10 @@ class FavouritePage extends Component<ConnectedProps<typeof connector>> {
 
     return (
       <div className='favourite-page d-flex flex-row justify-content-start w-100 h-100'>
-        <SideBar />
+        <SideBar isFullView={true} />
 
-        <div className='d-flex flex-column w-100 h-100 p-2'>
-          <div className='m-2 theme-btn-wrapper'>
+        <div className='d-flex flex-column w-100 h-100 py-2'>
+          <div className='m-2 me-3 theme-btn-wrapper'>
             <ThemeBtn />
           </div>
 

@@ -1,6 +1,6 @@
-import { Genre, MovieType } from 'src/types';
+import { Credits, Genre, MovieDetails, MovieIncomplete } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
-import { isGenresResponse, isMovieResponse } from 'src/utils/guards';
+import { isCredits, isGenresResponse, isMovieDetails, isMovieResponse } from 'src/utils/guards';
 
 const GET_OPTIONS = {
   method: 'GET',
@@ -11,7 +11,7 @@ const GET_OPTIONS = {
 };
 
 type Result = {
-  movies: MovieType[];
+  movies: MovieIncomplete[];
   maxPages: number;
 };
 
@@ -31,15 +31,17 @@ export const getMovies = async (
     : { movies: [], maxPages: 1 };
 };
 
-export const getSearchedMovies = async (query: string): Promise<MovieType[]> => {
+export const getSearchedMovies = async (query: string, page: number): Promise<Result> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/search/movie?query=${query}&language=en-US&page=1`,
+    `https://api.themoviedb.org/3/search/movie?query=${query}&language=en-US&page=${page}`,
     GET_OPTIONS
   );
 
   const movieResponse: unknown = await response.json();
 
-  return isMovieResponse(movieResponse) ? movieResponse.results : [];
+  return isMovieResponse(movieResponse)
+    ? { movies: movieResponse.results, maxPages: movieResponse.total_pages }
+    : { movies: [], maxPages: 1 };
 };
 
 export const getGenres = async (): Promise<Genre[]> => {
@@ -102,7 +104,7 @@ export const addOrDeleteToWatchlist = async (
 export const getFavouriteOrWatchlistMovies = async (
   accountId: number,
   shouldGetFavourite: boolean
-): Promise<MovieType[]> => {
+): Promise<MovieIncomplete[]> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/account/${accountId}/${
       shouldGetFavourite ? 'favorite' : 'watchlist'
@@ -113,4 +115,26 @@ export const getFavouriteOrWatchlistMovies = async (
   const movieResponse: unknown = await response.json();
 
   return isMovieResponse(movieResponse) ? movieResponse.results : [];
+};
+
+export const getMovie = async (movieId: number): Promise<MovieDetails | null> => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+    GET_OPTIONS
+  );
+
+  const movieResponse: unknown = await response.json();
+
+  return isMovieDetails(movieResponse) ? movieResponse : null;
+};
+
+export const getCredits = async (movieId: number): Promise<Credits | null> => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
+    GET_OPTIONS
+  );
+
+  const creditsResponse: unknown = await response.json();
+
+  return isCredits(creditsResponse) ? creditsResponse : null;
 };
