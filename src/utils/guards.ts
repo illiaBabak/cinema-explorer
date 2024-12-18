@@ -7,6 +7,7 @@ import {
   MovieIncomplete,
   MovieResponse,
   MovieType,
+  Person,
   SessionResponse,
   TokenResponse,
   User,
@@ -103,10 +104,29 @@ export const isCastEl = (data: unknown): data is CastEl =>
   'profile_path' in data &&
   (isNull(data.profile_path) || isString(data.profile_path)) &&
   'character' in data &&
-  isString(data.character);
+  isString(data.character) &&
+  'id' in data &&
+  isNumber(data.id);
 
 export const isCredits = (data: unknown): data is Credits =>
   isObj(data) &&
   'cast' in data &&
   Array.isArray(data.cast) &&
   data.cast.every((el) => isCastEl(el));
+
+export const isPerson = (data: unknown): data is Person =>
+  isObj(data) &&
+  'biography' in data &&
+  'birthday' in data &&
+  'deathday' in data &&
+  'name' in data &&
+  'place_of_birth' in data &&
+  'profile_path' in data &&
+  'known_for_department' in data &&
+  isString(data.biography) &&
+  (isString(data.birthday) || isNull(data.birthday)) &&
+  (isString(data.deathday) || isNull(data.deathday)) &&
+  isString(data.name) &&
+  (isString(data.place_of_birth) || isNull(data.place_of_birth)) &&
+  isString(data.profile_path) &&
+  isString(data.known_for_department);

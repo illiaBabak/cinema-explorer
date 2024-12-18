@@ -266,7 +266,7 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
                 </div>
               ))}
             </div>
-            <div className='d-flex flex-row w-100 h-100 flex-wrap justify-content-center align-items-center scroll-container position-relative'>
+            <div className='d-flex flex-row w-100 h-100 flex-wrap justify-content-center align-items-center scroll-container-y position-relative'>
               {isLoadingMovies && <Loader />}
 
               {!!searchedMovies.movies.length &&

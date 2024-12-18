@@ -12,6 +12,7 @@ import {
 import { getCredits, getMovie } from 'src/api/movie';
 import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
+import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { Credits, MovieDetails, MovieType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
@@ -139,6 +140,9 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                     <div className='d-flex flex-row scroll-container-x casts-container w-100'>
                       {credits?.cast.map((el, index) => (
                         <div
+                          onClick={() =>
+                            (window.location.href = `${pageConfig.person}?person-id=${el.id}&id=${movieFullInfo?.id}&category=${category}&previous=${previousPage}&movie-title=${movieFullInfo?.original_title}`)
+                          }
                           key={`cast-${index}-${el.name}`}
                           className='d-flex flex-column justify-content-between align-items-center cast text-center mx-3'
                         >

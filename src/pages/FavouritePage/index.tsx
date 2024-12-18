@@ -67,7 +67,7 @@ class FavouritePage extends Component<ConnectedProps<typeof connector>> {
             <ThemeBtn />
           </div>
 
-          <div className='d-flex flex-row justify-content-center scroll-container flex-wrap'>
+          <div className='d-flex flex-row justify-content-center scroll-container-y flex-wrap'>
             {isLoading && <Loader />}
 
             {!!favouriteMovies.length &&

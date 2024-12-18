@@ -62,8 +62,19 @@ export type CastEl = {
   name: string;
   profile_path: string | null;
   character: string;
+  id: number;
 };
 
 export type Credits = {
   cast: CastEl[];
+};
+
+export type Person = {
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  name: string;
+  place_of_birth: string | null;
+  profile_path: string;
+  known_for_department: string;
 };

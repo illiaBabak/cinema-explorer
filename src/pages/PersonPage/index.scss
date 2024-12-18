@@ -1,0 +1,32 @@
+.person-page {
+  width: calc(100% - 46px); //46px = sidebar width
+
+  .loader {
+    left: 50%;
+    top: 50%;
+  }
+
+  .content {
+    width: calc(100% - 50px); //50px = sidebar width + paddings
+    z-index: 1;
+
+    .breadcrumb {
+      flex-wrap: nowrap;
+
+      .item a,
+      .item.active,
+      .item.active:before {
+        color: #fff;
+      }
+    }
+
+    .poster {
+      width: 400px;
+      height: 650px;
+    }
+
+    .biography {
+      height: 400px;
+    }
+  }
+}

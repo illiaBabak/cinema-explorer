@@ -8,6 +8,7 @@ class PageConfig {
     watchlist: '/my-movies/watchlist',
   };
   movie = '/movie';
+  person = '/person';
 }
 
 export const pageConfig = new PageConfig();

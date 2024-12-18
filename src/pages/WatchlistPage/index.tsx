@@ -67,7 +67,7 @@ class WatchlistPage extends Component<ConnectedProps<typeof connector>> {
             <ThemeBtn />
           </div>
 
-          <div className='d-flex flex-row flex-wrap justify-content-center scroll-container'>
+          <div className='d-flex flex-row flex-wrap justify-content-center scroll-container-y'>
             {isLoading && <Loader />}
 
             {!!watchlistMovies.length &&

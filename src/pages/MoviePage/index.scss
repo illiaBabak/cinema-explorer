@@ -29,6 +29,7 @@
       .cast {
         width: 200px;
         height: 220px;
+        cursor: pointer;
 
         .cast-img {
           width: 110px;
@@ -37,6 +38,13 @@
 
         .character {
           font-size: 14px;
+        }
+
+        &:hover {
+          .cast-img {
+            transform: scale(1.05);
+            transition: 0.25s;
+          }
         }
       }
     }

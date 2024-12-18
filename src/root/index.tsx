@@ -9,6 +9,7 @@ import MoviePage from 'src/pages/MoviePage';
 import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
 import WatchlistPage from 'src/pages/WatchlistPage';
+import PersonPage from 'src/pages/PersonPage';
 import { PageInitialStateType } from 'src/reducers/pageReducer';
 
 const mapStateToProps = (state: { page: PageInitialStateType }) => ({
@@ -58,6 +59,7 @@ class App extends Component<ConnectedProps<typeof connector>> {
       home,
       myMovies: { favourite, watchlist },
       movie,
+      person,
     } = pageConfig;
 
     return (
@@ -74,6 +76,7 @@ class App extends Component<ConnectedProps<typeof connector>> {
             <Route exact path={favourite} component={FavouritePage} />
             <Route exact path={watchlist} component={WatchlistPage} />
             <Route path={movie} component={MoviePage} />
+            <Route path={person} component={PersonPage} />
             <Route path='*'>
               <Redirect to={pageConfig.redirect} />
             </Route>
