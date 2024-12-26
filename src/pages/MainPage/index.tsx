@@ -79,7 +79,7 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
   observer: IntersectionObserver | null = null;
   observerRef = createRef<HTMLDivElement>();
 
-  setMovies = async (category: (typeof MOVIE_CATEGORIES)[number]): Promise<void> => {
+  setMovies = async (category: (typeof MOVIE_CATEGORIES)[number] | null): Promise<void> => {
     const {
       setIsLoadingMovies,
       upComingMovies,
@@ -98,7 +98,11 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
 
     setIsLoadingMovies(true);
 
-    if (searchedMovies.movies.length && searchedMovies.page <= searchedMovies.maxPages) {
+    if (
+      !category &&
+      searchedMovies.movies.length &&
+      searchedMovies.page <= searchedMovies.maxPages
+    ) {
       const { movies, maxPages } = await getSearchedMovies(query, searchedMovies.page);
 
       setSearchedMovies({
@@ -166,6 +170,8 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
         page: ++searchedMovies.page,
         maxPages: searchedMovies.maxPages,
       });
+      this.setMovies(null);
+      return;
     } else if (currentCategory === 'upcoming') {
       setUpComingMovies({
         movies: [...upComingMovies.movies],
@@ -206,6 +212,7 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
     params.set('category', category);
     params.delete('query');
 
+    this.props.setQuery('');
     this.props.setCurrentCategory(category);
     this.setMovies(category);
     this.props.setSearchedMovies({
@@ -213,6 +220,8 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
       page: 1,
       maxPages: 1,
     });
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
   };
 
   componentDidMount(): void {
@@ -245,7 +254,7 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
     return (
       <div className='main-page d-flex flex-row justify-content-start w-100 h-100'>
         <SideBar isFullView={true} />
-        <div className='d-flex flex-column justify-content-start align-items-center content h-100'>
+        <div className='d-flex flex-column justify-content-start align-items-center content h-100 flex-grow-1'>
           <div className='main-content d-flex flex-column justify-content-start align-items-start w-100 h-100 position-relative'>
             <Header />
             <div className='d-flex flex-row categories'>
@@ -257,10 +266,7 @@ class MainPage extends Component<ConnectedProps<typeof connector>> {
                       : ''
                   } text-white d-flex justify-content-center align-items-center m-3 p-1 rounded`}
                   key={`${category}-${index}-category`}
-                  onClick={() => {
-                    this.handleChangeCategory(category);
-                    this.props.setQuery('');
-                  }}
+                  onClick={() => this.handleChangeCategory(category)}
                 >
                   {removeUnderlines(capitalize(category))}
                 </div>

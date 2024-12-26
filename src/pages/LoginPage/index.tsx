@@ -15,6 +15,8 @@ import { LoginInitialState } from 'src/reducers/loginReducer';
 import { getSessionId } from 'src/api/login';
 import { pageConfig } from 'src/config/pages';
 import ThemeBtn from 'src/components/ThemeBtn';
+import LanguageDrodown from 'src/components/LanguageDrodown';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 const mapStateToProps = (state: { login: LoginInitialState }) => ({
   name: state.login.name,
@@ -52,7 +54,7 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
     if (sessionId) {
       this.props.setSessionId(sessionId);
       sessionStorage.setItem('sessionId', sessionId);
-      window.location.href = pageConfig.home;
+      window.location.href = `${pageConfig.home}?language=${getLanguageFromParams()}`;
     }
   };
 
@@ -70,7 +72,11 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
 
     return (
       <div className='login-page w-100 h-100 d-flex flex-column p-3'>
-        <ThemeBtn />
+        <div className='d-flex flex-row w-100 align-items-center justify-content-between'>
+          <LanguageDrodown />
+          <ThemeBtn />
+        </div>
+
         <div className='form-wrapper d-flex flex-column align-self-center m-auto p-1'>
           <form className='form d-flex flex-column align-items-center justify-content-between px-4 py-3 w-100 h-100'>
             <div className='text-center'>

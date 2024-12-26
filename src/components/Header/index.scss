@@ -1,4 +1,8 @@
 .header {
+  .dropdown {
+    margin-right: 42px;
+  }
+
   .input-wrapper {
     width: 420px;
 
@@ -19,6 +23,7 @@
     }
 
     .clear-btn {
+      color: var(--text);
       font-size: 24px;
       width: 24px;
       height: 24px;

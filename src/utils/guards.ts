@@ -130,3 +130,6 @@ export const isPerson = (data: unknown): data is Person =>
   (isString(data.place_of_birth) || isNull(data.place_of_birth)) &&
   isString(data.profile_path) &&
   isString(data.known_for_department);
+
+export const isStringArr = (data: unknown): data is string[] =>
+  Array.isArray(data) && data.every((el) => isString(el));

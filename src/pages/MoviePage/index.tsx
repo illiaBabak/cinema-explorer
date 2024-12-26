@@ -10,13 +10,16 @@ import {
   movieSetIsLoading,
 } from 'src/actions/movieActions';
 import { getCredits, getMovie } from 'src/api/movie';
+import LanguageDrodown from 'src/components/LanguageDrodown';
 import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
+import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { Credits, MovieDetails, MovieType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 import { formatDate } from 'src/utils/formatDate';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
   movieFullInfo: state.movie.movieFullInfo,
@@ -91,17 +94,27 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                 />
               )}
               <div className='d-flex flex-column w-100 h-100 p-3 content'>
-                <Breadcrumb className='d-flex align-self-start me-auto breadcrumb'>
-                  <Breadcrumb.Item
-                    className='item'
-                    href={`${previousPage}?category=${category}${query ? `&query=${query}` : ''}`}
-                  >
-                    &lt;- Back
-                  </Breadcrumb.Item>
-                  <Breadcrumb.Item className='item' active>
-                    {movieFullInfo?.original_title}
-                  </Breadcrumb.Item>
-                </Breadcrumb>
+                <div className='d-flex flex-row w-100'>
+                  <Breadcrumb className='d-flex align-self-start me-auto breadcrumb'>
+                    <Breadcrumb.Item
+                      className='item'
+                      href={`${previousPage}?language=${getLanguageFromParams()}&category=${category}${
+                        query ? `&query=${query}` : ''
+                      }`}
+                    >
+                      &lt;- Back
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item className='item' active>
+                      {movieFullInfo?.original_title}
+                    </Breadcrumb.Item>
+                  </Breadcrumb>
+
+                  <div className='d-flex flex-row align-items-center'>
+                    <LanguageDrodown />
+                    <ThemeBtn />
+                  </div>
+                </div>
+
                 <div className='d-flex w-100 flex-row align-items-center justify-content-center align-self-center p-2 m-auto'>
                   <img
                     className='object-fit-cover poster'
@@ -141,7 +154,13 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                       {credits?.cast.map((el, index) => (
                         <div
                           onClick={() =>
-                            (window.location.href = `${pageConfig.person}?person-id=${el.id}&id=${movieFullInfo?.id}&category=${category}&previous=${previousPage}&movie-title=${movieFullInfo?.original_title}`)
+                            (window.location.href = `${
+                              pageConfig.person
+                            }?language=${getLanguageFromParams()}&person-id=${el.id}&id=${
+                              movieFullInfo?.id
+                            }&category=${category}&previous=${previousPage}&movie-title=${
+                              movieFullInfo?.original_title
+                            }`)
                           }
                           key={`cast-${index}-${el.name}`}
                           className='d-flex flex-column justify-content-between align-items-center cast text-center mx-3'

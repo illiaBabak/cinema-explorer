@@ -5,12 +5,15 @@ import { Dispatch } from 'redux';
 import { MovieAction, movieSetIsLoading } from 'src/actions/movieActions';
 import { PersonAction, personSetFullInfo } from 'src/actions/personActions';
 import { getPerson } from 'src/api/person';
+import LanguageDrodown from 'src/components/LanguageDrodown';
 import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
+import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { PersonInitialStateType } from 'src/reducers/personReducer';
 import { Person } from 'src/types';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 const mapStateToProps = (state: {
   person: PersonInitialStateType;
@@ -73,27 +76,39 @@ class PersonPage extends Component<ConnectedProps<typeof connector>> {
             <Loader />
           ) : (
             <div className='d-flex flex-column w-100 h-100 p-3 content'>
-              <Breadcrumb className='d-flex align-self-start me-auto breadcrumb'>
-                <Breadcrumb.Item className='item' href={`${previousPage}`}>
-                  &lt;- Home
-                </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className='item'
-                  href={`${pageConfig.movie}?id=${movieId}&category=${category}&previous=${previousPage}`}
-                >
-                  &lt;- {movieTitle}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item className='item' active>
-                  {personInfo?.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
+              <div className='w-100 d-flex flex-row align-items-center'>
+                <Breadcrumb className='d-flex align-self-start me-auto breadcrumb'>
+                  <Breadcrumb.Item
+                    className='item'
+                    href={`${previousPage}?language=${getLanguageFromParams()}`}
+                  >
+                    &lt;- Home
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item
+                    className='item'
+                    href={`${
+                      pageConfig.movie
+                    }?language=${getLanguageFromParams()}&id=${movieId}&category=${category}&previous=${previousPage}`}
+                  >
+                    &lt;- {movieTitle}
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item className='item' active>
+                    {personInfo?.name}
+                  </Breadcrumb.Item>
+                </Breadcrumb>
+                <div className='d-flex flex-row align-items-center'>
+                  <LanguageDrodown />
+                  <ThemeBtn />
+                </div>
+              </div>
+
               <div className='d-flex w-100 flex-row align-items-center justify-content-center align-self-center p-2 m-auto'>
                 <img
                   className='object-fit-cover poster'
                   src={`http://image.tmdb.org/t/p/w780${personInfo?.profile_path}`}
                   alt='poster'
                 />
-                <div className='d-flex flex-column justify-content-start ms-3 text-white h-100 w-50'>
+                <div className='d-flex flex-column justify-content-start ms-3 h-100 w-50'>
                   <h2>{personInfo?.name}</h2>
                   <i className='mt-3'>{personInfo?.known_for_department}</i>
                   <i className='mt-3'>Place of birth: {personInfo?.place_of_birth}</i>

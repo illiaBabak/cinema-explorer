@@ -8,6 +8,7 @@ import {
   movieSetIsLoading,
 } from 'src/actions/movieActions';
 import { getFavouriteOrWatchlistMovies, getGenres } from 'src/api/movie';
+import LanguageDrodown from 'src/components/LanguageDrodown';
 import { Loader } from 'src/components/Loader';
 import Movie from 'src/components/Movie';
 import SideBar from 'src/components/SideBar';
@@ -63,7 +64,8 @@ class FavouritePage extends Component<ConnectedProps<typeof connector>> {
         <SideBar isFullView={true} />
 
         <div className='d-flex flex-column w-100 h-100 py-2'>
-          <div className='m-2 me-3 theme-btn-wrapper'>
+          <div className='d-flex flex-row align-items-center m-2 me-3 btns-wrapper'>
+            <LanguageDrodown />
             <ThemeBtn />
           </div>
 

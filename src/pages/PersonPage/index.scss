@@ -8,6 +8,7 @@
 
   .content {
     width: calc(100% - 50px); //50px = sidebar width + paddings
+    color: var(--text);
     z-index: 1;
 
     .breadcrumb {
@@ -16,8 +17,12 @@
       .item a,
       .item.active,
       .item.active:before {
-        color: #fff;
+        color: var(--text);
       }
+    }
+
+    .dropdown {
+      margin-right: 42px;
     }
 
     .poster {

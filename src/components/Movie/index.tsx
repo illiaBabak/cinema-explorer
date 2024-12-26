@@ -7,6 +7,7 @@ import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { MovieIncomplete } from 'src/types';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 type Props = {
   movie: MovieIncomplete;
@@ -96,7 +97,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
       <div
         className='movie-card-wrapper p-2 m-3 rounded'
         onClick={() =>
-          (window.location.href = `${pageConfig.movie}?id=${
+          (window.location.href = `${pageConfig.movie}?language=${getLanguageFromParams()}&id=${
             movie.id
           }&category=${currentCategory}&previous=${window.location.pathname}${
             query ? `&query=${query}` : ''

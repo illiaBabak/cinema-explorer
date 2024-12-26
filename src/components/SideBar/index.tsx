@@ -13,6 +13,7 @@ import { pageConfig } from 'src/config/pages';
 import { NavLink } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { PageInitialStateType } from 'src/reducers/pageReducer';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 type Props = {
   isFullView: boolean;
@@ -117,7 +118,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
                   className={`${isHome ? 'selected' : ''} link rounded ${
                     isFullView ? 'w-100 p-1' : 'ms-1'
                   } mt-1`}
-                  to={pageConfig.home}
+                  to={`${pageConfig.home}?language=${getLanguageFromParams()}`}
                 >
                   {isFullView ? (
                     'Home'
@@ -134,7 +135,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
               </div>
               <div className='d-flex flex-column w-100'>
                 <NavLink
-                  to={pageConfig.myMovies.favourite}
+                  to={`${pageConfig.myMovies.favourite}?language=${getLanguageFromParams()}`}
                   className={`${isMyMovies ? 'selected' : ''} link rounded ${
                     isFullView ? 'w-100 p-1' : 'ms-1'
                   } mt-1`}
@@ -157,7 +158,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
                       className={`${
                         isFavourite ? 'selected' : ''
                       } sub-link link rounded w-75 p-1 mt-1`}
-                      to={pageConfig.myMovies.favourite}
+                      to={`${pageConfig.myMovies.favourite}?language=${getLanguageFromParams()}`}
                     >
                       {isFullView ? 'Favourites' : 'F'}
                     </NavLink>
@@ -165,7 +166,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
                       className={`${
                         !isFavourite ? 'selected' : ''
                       } sub-link link rounded w-75 p-1 mt-1`}
-                      to={pageConfig.myMovies.watchlist}
+                      to={`${pageConfig.myMovies.watchlist}?language=${getLanguageFromParams()}`}
                     >
                       {isFullView ? 'Watchlist' : 'W'}
                     </NavLink>

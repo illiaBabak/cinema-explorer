@@ -1,6 +1,10 @@
 .watchlist-page {
-  .theme-btn-wrapper {
+  .btns-wrapper {
     align-self: flex-end;
+
+    .dropdown {
+      margin-right: 42px;
+    }
   }
 
   .loader {

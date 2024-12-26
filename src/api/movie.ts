@@ -1,5 +1,6 @@
 import { Credits, Genre, MovieDetails, MovieIncomplete } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
+import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 import { isCredits, isGenresResponse, isMovieDetails, isMovieResponse } from 'src/utils/guards';
 
 const GET_OPTIONS = {
@@ -20,7 +21,7 @@ export const getMovies = async (
   page: number
 ): Promise<Result> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=${page}`,
+    `https://api.themoviedb.org/3/movie/${category}?language=${getLanguageFromParams()}&page=${page}`,
     GET_OPTIONS
   );
 
@@ -33,7 +34,7 @@ export const getMovies = async (
 
 export const getSearchedMovies = async (query: string, page: number): Promise<Result> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/search/movie?query=${query}&language=en-US&page=${page}`,
+    `https://api.themoviedb.org/3/search/movie?query=${query}&language=${getLanguageFromParams()}&page=${page}`,
     GET_OPTIONS
   );
 
@@ -46,7 +47,7 @@ export const getSearchedMovies = async (query: string, page: number): Promise<Re
 
 export const getGenres = async (): Promise<Genre[]> => {
   const response = await fetch(
-    'https://api.themoviedb.org/3/genre/movie/list?language=en',
+    `https://api.themoviedb.org/3/genre/movie/list?language=${getLanguageFromParams()}`,
     GET_OPTIONS
   );
 
@@ -108,7 +109,7 @@ export const getFavouriteOrWatchlistMovies = async (
   const response = await fetch(
     `https://api.themoviedb.org/3/account/${accountId}/${
       shouldGetFavourite ? 'favorite' : 'watchlist'
-    }/movies?language=en-US&page=1&sort_by=created_at.asc`,
+    }/movies?language=${getLanguageFromParams()}&page=1&sort_by=created_at.asc`,
     GET_OPTIONS
   );
 
@@ -119,7 +120,7 @@ export const getFavouriteOrWatchlistMovies = async (
 
 export const getMovie = async (movieId: number): Promise<MovieDetails | null> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+    `https://api.themoviedb.org/3/movie/${movieId}?language=${getLanguageFromParams()}`,
     GET_OPTIONS
   );
 
@@ -130,7 +131,7 @@ export const getMovie = async (movieId: number): Promise<MovieDetails | null> =>
 
 export const getCredits = async (movieId: number): Promise<Credits | null> => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
+    `https://api.themoviedb.org/3/movie/${movieId}/credits?language=${getLanguageFromParams()}`,
     GET_OPTIONS
   );
 

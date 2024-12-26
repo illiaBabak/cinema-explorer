@@ -15,6 +15,7 @@ import { UserInitialStateType } from 'src/reducers/userReducer';
 import { Genre, MovieIncomplete } from 'src/types';
 import { getFavouriteOrWatchlistMovies, getGenres } from 'src/api/movie';
 import { Loader } from 'src/components/Loader';
+import LanguageDrodown from 'src/components/LanguageDrodown';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   watchlistMovies: state.movie.watchlistMovies,
@@ -63,7 +64,8 @@ class WatchlistPage extends Component<ConnectedProps<typeof connector>> {
         <SideBar isFullView={true} />
 
         <div className='d-flex flex-column w-100 h-100 p-2'>
-          <div className='m-2 theme-btn-wrapper'>
+          <div className='d-flex flex-row align-items-center m-2 btns-wrapper'>
+            <LanguageDrodown />
             <ThemeBtn />
           </div>
 

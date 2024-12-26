@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
   MovieAction,
+  movieSetCurrentCategory,
   movieSetIsLoading,
   movieSetQuery,
   movieSetSearchedList,
@@ -11,6 +12,8 @@ import { getSearchedMovies } from 'src/api/movie';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { MovieIncomplete } from 'src/types';
 import ThemeBtn from '../ThemeBtn';
+import LanguageDrodown from '../LanguageDrodown';
+import { MOVIE_CATEGORIES } from 'src/utils/constants';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
   searchedMovies: state.movie.searchedMovies,
@@ -29,6 +32,8 @@ const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
   }) => dispatch(movieSetSearchedList({ movies, page, maxPages })),
   setQuery: (query: string) => dispatch(movieSetQuery(query)),
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
+  setCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
+    dispatch(movieSetCurrentCategory(category)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -37,14 +42,25 @@ class Header extends Component<ConnectedProps<typeof connector>> {
   isInitialized = true;
 
   handleSearch = async () => {
-    const { setSearchedMovies, query, setIsLoadingMovies, searchedMovies } = this.props;
+    const { setSearchedMovies, query, setIsLoadingMovies, searchedMovies, setCategory } =
+      this.props;
 
     const params = new URLSearchParams(window.location.search);
-    params.set('query', query);
+    if (query) {
+      setCategory('');
+
+      params.set('query', query);
+      params.delete('category');
+    } else {
+      this.handleClearSearch();
+      return;
+    }
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
 
     setIsLoadingMovies(true);
 
-    const { movies, maxPages } = await getSearchedMovies(query, searchedMovies.page);
+    const { movies, maxPages } = await getSearchedMovies(query, 1);
 
     setSearchedMovies({
       movies: [...movies],
@@ -55,12 +71,27 @@ class Header extends Component<ConnectedProps<typeof connector>> {
     setIsLoadingMovies(false);
   };
 
+  handleClearSearch = () => {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('query');
+
+    this.props.setQuery('');
+
+    this.props.setSearchedMovies({
+      movies: [],
+      page: 1,
+      maxPages: 1,
+    });
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  };
+
   componentDidMount(): void {
     this.handleSearch();
   }
 
   render(): JSX.Element {
-    const { setQuery, query, setSearchedMovies } = this.props;
+    const { setQuery, query } = this.props;
 
     return (
       <div className='d-flex flex-row align-items-center justify-content-between header w-100 p-3'>
@@ -83,20 +114,17 @@ class Header extends Component<ConnectedProps<typeof connector>> {
                 e.stopPropagation();
                 e.preventDefault();
 
-                setQuery('');
-
-                setSearchedMovies({
-                  movies: [],
-                  page: 1,
-                  maxPages: 1,
-                });
+                this.handleClearSearch();
               }}
             >
               x
             </div>
           )}
         </div>
-        <ThemeBtn />
+        <div className='d-flex flex-row'>
+          <LanguageDrodown />
+          <ThemeBtn />
+        </div>
       </div>
     );
   }
