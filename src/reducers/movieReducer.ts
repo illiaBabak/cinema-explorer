@@ -43,8 +43,8 @@ export type MovieInitialStateType = {
   genres: {
     [k: string]: string;
   };
-  favouriteMovies: MovieIncomplete[];
-  watchlistMovies: MovieIncomplete[];
+  favouriteMovies: (MovieIncomplete | MovieDetails | null)[];
+  watchlistMovies: (MovieIncomplete | MovieDetails | null)[];
   movieFullInfo: MovieDetails | null;
   credits: Credits | null;
 };

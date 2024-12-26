@@ -6,7 +6,7 @@ import { addOrDeleteFavorite, addOrDeleteToWatchlist } from 'src/api/movie';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { MovieIncomplete } from 'src/types';
+import { MovieDetails, MovieIncomplete } from 'src/types';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 type Props = {
@@ -30,8 +30,10 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setFavouriteMovies: (movies: MovieIncomplete[]) => dispatch(movieSetFavourite(movies)),
-  setWatchlistMovies: (movies: MovieIncomplete[]) => dispatch(movieSetWatchlist(movies)),
+  setFavouriteMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
+    dispatch(movieSetFavourite(movies)),
+  setWatchlistMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
+    dispatch(movieSetWatchlist(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -86,11 +88,11 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
     const positionClass = `${this.state.menuOptions.position}-position`;
 
     const isFavouriteMovie = favouriteMovies.some(
-      (favouriteMovie) => favouriteMovie.id === movie.id
+      (favouriteMovie) => favouriteMovie?.id === movie.id
     );
 
     const isWatchlistMovie = watchlistMovies.some(
-      (watchlistMovie) => watchlistMovie.id === movie.id
+      (watchlistMovie) => watchlistMovie?.id === movie.id
     );
 
     return (
@@ -136,7 +138,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
                   setFavouriteMovies(
                     !isFavouriteMovie
                       ? [...favouriteMovies, movie]
-                      : favouriteMovies.filter((favouriteMovie) => favouriteMovie.id !== movie.id)
+                      : favouriteMovies.filter((favouriteMovie) => favouriteMovie?.id !== movie.id)
                   );
                 }}
               >
@@ -156,7 +158,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
                   setWatchlistMovies(
                     !isWatchlistMovie
                       ? [...watchlistMovies, movie]
-                      : watchlistMovies.filter((watchlistMovie) => watchlistMovie.id !== movie.id)
+                      : watchlistMovies.filter((watchlistMovie) => watchlistMovie?.id !== movie.id)
                   );
                 }}
               >

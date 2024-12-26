@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { USER_SET_INFO, USER_SHOULD_SHOW_LOGOUT_WINDOW, UserAction } from 'src/actions/userActions';
 import { User } from 'src/types';
 

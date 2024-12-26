@@ -67,11 +67,11 @@ export type MovieAction =
     }
   | {
       type: typeof MOVIE_SET_FAVOURITE;
-      payload: MovieIncomplete[];
+      payload: (MovieIncomplete | MovieDetails | null)[];
     }
   | {
       type: typeof MOVIE_SET_WATCHLIST;
-      payload: MovieIncomplete[];
+      payload: (MovieIncomplete | MovieDetails | null)[];
     }
   | {
       type: typeof MOVIE_SET_FULL_INFO;
@@ -172,12 +172,16 @@ export const movieSetGenres = (genres: Genre[]): MovieAction => ({
   payload: genres,
 });
 
-export const movieSetFavourite = (movies: MovieIncomplete[]): MovieAction => ({
+export const movieSetFavourite = (
+  movies: (MovieIncomplete | MovieDetails | null)[]
+): MovieAction => ({
   type: MOVIE_SET_FAVOURITE,
   payload: movies,
 });
 
-export const movieSetWatchlist = (movies: MovieIncomplete[]): MovieAction => ({
+export const movieSetWatchlist = (
+  movies: (MovieIncomplete | MovieDetails | null)[]
+): MovieAction => ({
   type: MOVIE_SET_WATCHLIST,
   payload: movies,
 });

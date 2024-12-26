@@ -16,6 +16,7 @@ import { Genre, MovieIncomplete } from 'src/types';
 import { getFavouriteOrWatchlistMovies, getGenres } from 'src/api/movie';
 import { Loader } from 'src/components/Loader';
 import LanguageDrodown from 'src/components/LanguageDrodown';
+import { isMovieIncompleteInfo } from 'src/utils/guards';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   watchlistMovies: state.movie.watchlistMovies,
@@ -73,9 +74,13 @@ class WatchlistPage extends Component<ConnectedProps<typeof connector>> {
             {isLoading && <Loader />}
 
             {!!watchlistMovies.length &&
-              watchlistMovies.map((movie, index) => (
-                <Movie key={`favourite-movie-${index}-${movie.id}`} movie={movie} />
-              ))}
+              watchlistMovies.map((movie, index) => {
+                return (
+                  isMovieIncompleteInfo(movie) && (
+                    <Movie key={`favourite-movie-${index}-${movie?.id}`} movie={movie} />
+                  )
+                );
+              })}
           </div>
         </div>
       </div>

@@ -6,26 +6,38 @@ import {
   MovieAction,
   movieSetCredits,
   movieSetCurrentCategory,
+  movieSetFavourite,
   movieSetFullInfo,
   movieSetIsLoading,
+  movieSetWatchlist,
 } from 'src/actions/movieActions';
-import { getCredits, getMovie } from 'src/api/movie';
+import {
+  addOrDeleteFavorite,
+  addOrDeleteToWatchlist,
+  getCredits,
+  getFavouriteOrWatchlistMovies,
+  getMovie,
+} from 'src/api/movie';
 import LanguageDrodown from 'src/components/LanguageDrodown';
 import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
-import { Credits, MovieDetails, MovieType } from 'src/types';
+import { UserInitialStateType } from 'src/reducers/userReducer';
+import { Credits, MovieDetails, MovieIncomplete, MovieType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 import { formatDate } from 'src/utils/formatDate';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
-const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
+const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   movieFullInfo: state.movie.movieFullInfo,
   credits: state.movie.credits,
   category: state.movie.currentCategory,
   isLoading: state.movie.isLoading,
+  favouriteMovies: state.movie.favouriteMovies,
+  watchlistMovies: state.movie.watchlistMovies,
+  accountId: state.user.user?.id ?? 0,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
@@ -35,6 +47,10 @@ const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
   setCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
     dispatch(movieSetCurrentCategory(category)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
+  setFavouriteMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
+    dispatch(movieSetFavourite(movies)),
+  setWatchlistMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
+    dispatch(movieSetWatchlist(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -52,11 +68,19 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
 
     const credits = await getCredits(movieId);
 
+    const favouriteMovies = await getFavouriteOrWatchlistMovies(this.props.accountId, true);
+
+    const watchlistMovies = await getFavouriteOrWatchlistMovies(this.props.accountId, false);
+
     this.props.setMovieFullInfo(movie);
 
     this.props.setCredits(credits);
 
     this.props.setCategory(category);
+
+    this.props.setFavouriteMovies(favouriteMovies);
+
+    this.props.setWatchlistMovies(watchlistMovies);
 
     this.props.setIsLoading(false);
   };
@@ -70,13 +94,31 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
-    const { movieFullInfo, credits, category, isLoading } = this.props;
+    const {
+      movieFullInfo,
+      credits,
+      category,
+      isLoading,
+      favouriteMovies,
+      watchlistMovies,
+      setFavouriteMovies,
+      setWatchlistMovies,
+      accountId,
+    } = this.props;
 
     const params = new URLSearchParams(window.location.search);
 
     const query = params.get('query');
 
     const previousPage = params.get('previous');
+
+    const isFavouriteMovie = favouriteMovies.some(
+      (favouriteMovie) => favouriteMovie?.id === movieFullInfo?.id
+    );
+
+    const isWatchlistMovie = watchlistMovies.some(
+      (watchlistMovie) => watchlistMovie?.id === movieFullInfo?.id
+    );
 
     return (
       <div className='movie-page d-flex flex-row h-100 position-relative flex-grow-1'>
@@ -148,6 +190,68 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                         {formatDate(movieFullInfo?.release_date ?? '')}
                       </p>
                       <p className='mb-0 mt-4'>{movieFullInfo?.overview}</p>
+                      <div className='d-flex flex-row align-items-center mt-4'>
+                        <div
+                          className='option d-flex flex-row align-items-center justify-content-start p-1 rounded text-dark'
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            addOrDeleteFavorite(
+                              movieFullInfo?.id ?? 0,
+                              !isFavouriteMovie,
+                              accountId
+                            );
+                            setFavouriteMovies(
+                              !isFavouriteMovie
+                                ? [...favouriteMovies, movieFullInfo]
+                                : favouriteMovies.filter(
+                                    (favouriteMovie) => favouriteMovie?.id !== movieFullInfo?.id
+                                  )
+                            );
+                          }}
+                        >
+                          <img
+                            className='object-fit-contain option-img'
+                            src={`${
+                              isFavouriteMovie ? '/images/filled-heart.png' : '/images/heart.png'
+                            }`}
+                            alt='heart'
+                          />
+                          <p className='m-0 ms-2'>
+                            {isFavouriteMovie ? 'Delete from' : 'Add to'} favourites
+                          </p>
+                        </div>
+                        <div
+                          className='option d-flex flex-row align-items-center justify-content-start p-1 ms-3 rounded text-dark'
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            addOrDeleteToWatchlist(
+                              movieFullInfo?.id ?? 0,
+                              !isWatchlistMovie,
+                              accountId
+                            );
+                            setWatchlistMovies(
+                              !isWatchlistMovie
+                                ? [...watchlistMovies, movieFullInfo]
+                                : watchlistMovies.filter(
+                                    (watchlistMovie) => watchlistMovie?.id !== movieFullInfo?.id
+                                  )
+                            );
+                          }}
+                        >
+                          <img
+                            className='object-fit-contain option-img'
+                            src={`${
+                              isWatchlistMovie ? '/images/remove.png' : '/images/watchlist.png'
+                            }`}
+                            alt='list'
+                          />
+                          <p className='m-0 ms-2'>
+                            {isWatchlistMovie ? 'Delete from' : 'Add to'} watchlist
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
                     <div className='d-flex flex-row scroll-container-x casts-container w-100'>

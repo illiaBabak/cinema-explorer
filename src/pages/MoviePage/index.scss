@@ -25,6 +25,22 @@
       }
     }
 
+    .option {
+      width: 240px;
+      height: 36px;
+      background-color: #d1d1d1;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+
+      .option-img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
     .dropdown {
       margin-right: 42px;
     }
