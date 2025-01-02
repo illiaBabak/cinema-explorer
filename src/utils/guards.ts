@@ -1,12 +1,12 @@
 import {
-  CastEl,
-  Credits,
+  CastMember,
+  MovieCredits,
   Genre,
   GenresResponse,
   MovieDetails,
-  MovieIncomplete,
+  MovieWithGenres,
   MovieResponse,
-  MovieType,
+  MovieBaseType,
   Person,
   SessionResponse,
   TokenResponse,
@@ -22,7 +22,7 @@ export const isObj = (data: unknown): data is object => !!data && typeof data ==
 
 export const isBoolean = (data: unknown): data is boolean => typeof data === 'boolean';
 
-export const isNull = (data: unknown): data is null => typeof data === 'object' && !data;
+export const isNull = (data: unknown): data is null => !data && typeof data === 'object';
 
 export const isTokenResponse = (data: unknown): data is TokenResponse =>
   isObj(data) && 'request_token' in data && isString(data.request_token);
@@ -53,7 +53,7 @@ export const isUser = (data: unknown): data is User =>
 export const isGenresObj = (data: unknown): data is { id: number; name: string } =>
   isObj(data) && 'id' in data && 'name' in data && isNumber(data.id) && isString(data.name);
 
-export const isMovie = (data: unknown): data is MovieType =>
+export const isMovie = (data: unknown): data is MovieBaseType =>
   isObj(data) &&
   'poster_path' in data &&
   'original_title' in data &&
@@ -67,7 +67,7 @@ export const isMovie = (data: unknown): data is MovieType =>
   isString(data.overview) &&
   isString(data.release_date);
 
-export const isMovieIncompleteInfo = (data: unknown): data is MovieIncomplete =>
+export const isMovieWithGenres = (data: unknown): data is MovieWithGenres =>
   isMovie(data) &&
   'genre_ids' in data &&
   Array.isArray(data.genre_ids) &&
@@ -85,7 +85,7 @@ export const isMovieResponse = (data: unknown): data is MovieResponse =>
   'results' in data &&
   'total_pages' in data &&
   Array.isArray(data.results) &&
-  data.results.every((el) => isMovieIncompleteInfo(el)) &&
+  data.results.every((el) => isMovieWithGenres(el)) &&
   isNumber(data.total_pages);
 
 export const isGenre = (data: unknown): data is Genre =>
@@ -97,7 +97,7 @@ export const isGenresResponse = (data: unknown): data is GenresResponse =>
   Array.isArray(data.genres) &&
   data.genres.every((el) => isGenre(el));
 
-export const isCastEl = (data: unknown): data is CastEl =>
+export const isCastMember = (data: unknown): data is CastMember =>
   isObj(data) &&
   'name' in data &&
   isString(data.name) &&
@@ -108,11 +108,11 @@ export const isCastEl = (data: unknown): data is CastEl =>
   'id' in data &&
   isNumber(data.id);
 
-export const isCredits = (data: unknown): data is Credits =>
+export const isMovieCredits = (data: unknown): data is MovieCredits =>
   isObj(data) &&
   'cast' in data &&
   Array.isArray(data.cast) &&
-  data.cast.every((el) => isCastEl(el));
+  data.cast.every((el) => isCastMember(el));
 
 export const isPerson = (data: unknown): data is Person =>
   isObj(data) &&

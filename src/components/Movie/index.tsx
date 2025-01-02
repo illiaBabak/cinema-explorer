@@ -1,16 +1,20 @@
 import { Component, createRef } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
-import { MovieAction, movieSetFavourite, movieSetWatchlist } from 'src/actions/movieActions';
+import {
+  MovieAction,
+  movieSetFavouriteList,
+  movieSetWatchlistList,
+} from 'src/actions/movieActions';
 import { addOrDeleteFavorite, addOrDeleteToWatchlist } from 'src/api/movie';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { MovieDetails, MovieIncomplete } from 'src/types';
+import { MovieDetails, MovieWithGenres } from 'src/types';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 type Props = {
-  movie: MovieIncomplete;
+  movie: MovieWithGenres;
 };
 
 type State = {
@@ -30,10 +34,10 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setFavouriteMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
-    dispatch(movieSetFavourite(movies)),
-  setWatchlistMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
-    dispatch(movieSetWatchlist(movies)),
+  setFavouriteMovies: (movies: (MovieWithGenres | MovieDetails | null)[]) =>
+    dispatch(movieSetFavouriteList(movies)),
+  setWatchlistMovies: (movies: (MovieWithGenres | MovieDetails | null)[]) =>
+    dispatch(movieSetWatchlistList(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

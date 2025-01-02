@@ -1,15 +1,15 @@
 import { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
-import { PageAction, pageSetIsLightTheme } from 'src/actions/pageActions';
-import { PageInitialStateType } from 'src/reducers/pageReducer';
+import { AppViewAction, appViewSetTheme } from 'src/actions/appViewActions';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 
-const mapStateToProps = (state: { page: PageInitialStateType }) => ({
-  isLightTheme: state.page.isLightTheme,
+const mapStateToProps = (state: { appView: AppViewInitialStateType }) => ({
+  isLightTheme: state.appView.isLightTheme,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<PageAction>) => ({
-  setIsLightTheme: (isLightTheme: boolean) => dispatch(pageSetIsLightTheme(isLightTheme)),
+const mapDispatchToProps = (dispatch: Dispatch<AppViewAction>) => ({
+  setIsLightTheme: (isLightTheme: boolean) => dispatch(appViewSetTheme(isLightTheme)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

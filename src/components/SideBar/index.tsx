@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { LoginAction, loginSetSessionId } from 'src/actions/loginActions';
 import { UserAction, userSetInfo, userShouldShowLogoutWindow } from 'src/actions/userActions';
 import { getUser } from 'src/api/user';
-import { LoginInitialState } from 'src/reducers/loginReducer';
+import { LoginInitialStateType } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { User } from 'src/types';
 import { isString } from 'src/utils/guards';
@@ -12,7 +12,7 @@ import LogoutWindow from '../LogoutWindow';
 import { pageConfig } from 'src/config/pages';
 import { NavLink } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { PageInitialStateType } from 'src/reducers/pageReducer';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 type Props = {
@@ -20,14 +20,14 @@ type Props = {
 };
 
 const mapStateToProps = (state: {
-  login: LoginInitialState;
+  login: LoginInitialStateType;
   user: UserInitialStateType;
-  page: PageInitialStateType;
+  appView: AppViewInitialStateType;
 }) => ({
   sessionId: state.login.sessionId,
   user: state.user.user,
   shouldShowLogoutWindow: state.user.shouldShowLogoutWindow,
-  isLightTheme: state.page.isLightTheme,
+  isLightTheme: state.appView.isLightTheme,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<LoginAction | UserAction>) => ({

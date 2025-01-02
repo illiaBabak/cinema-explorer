@@ -1,3 +1,4 @@
+import { FETCH_OPTIONS } from 'src/utils/constants';
 import { isErrorValidate, isSessionResponse, isTokenResponse } from 'src/utils/guards';
 
 type LoginResponse = {
@@ -6,18 +7,10 @@ type LoginResponse = {
 };
 
 const getToken = async (): Promise<string | null> => {
-  const options = {
+  const tokenResponse = await fetch('https://api.themoviedb.org/3/authentication/token/new', {
+    ...FETCH_OPTIONS,
     method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
-  };
-
-  const tokenResponse = await fetch(
-    'https://api.themoviedb.org/3/authentication/token/new',
-    options
-  );
+  });
 
   const tokenData: unknown = await tokenResponse.json();
 
@@ -28,12 +21,8 @@ const validateToken = async (username: string, password: string): Promise<LoginR
   const token = await getToken();
 
   const options = {
+    ...FETCH_OPTIONS,
     method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
     body: JSON.stringify({
       username,
       password,
@@ -59,12 +48,8 @@ export const getSessionId = async (username: string, password: string): Promise<
   const { data: validatedToken, error } = await validateToken(username, password);
 
   const options = {
+    ...FETCH_OPTIONS,
     method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
     body: JSON.stringify({ request_token: validatedToken }),
   };
 
@@ -77,12 +62,8 @@ export const getSessionId = async (username: string, password: string): Promise<
 
 export const deleteSessionId = async (sessionId: string): Promise<void> => {
   const options = {
+    ...FETCH_OPTIONS,
     method: 'DELETE',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
     body: JSON.stringify({ session_id: sessionId }),
   };
 

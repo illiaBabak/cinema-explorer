@@ -10,7 +10,7 @@ import {
 } from 'src/actions/movieActions';
 import { getSearchedMovies } from 'src/api/movie';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
-import { MovieIncomplete } from 'src/types';
+import { MoviePageData } from 'src/types';
 import ThemeBtn from '../ThemeBtn';
 import LanguageDrodown from '../LanguageDrodown';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
@@ -21,15 +21,8 @@ const mapStateToProps = (state: { movie: MovieInitialStateType }) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setSearchedMovies: ({
-    movies,
-    page,
-    maxPages,
-  }: {
-    movies: MovieIncomplete[];
-    page: number;
-    maxPages: number;
-  }) => dispatch(movieSetSearchedList({ movies, page, maxPages })),
+  setSearchedMovies: ({ movies, page, maxPages }: MoviePageData) =>
+    dispatch(movieSetSearchedList({ movies, page, maxPages })),
   setQuery: (query: string) => dispatch(movieSetQuery(query)),
   setIsLoadingMovies: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
@@ -39,20 +32,19 @@ const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 class Header extends Component<ConnectedProps<typeof connector>> {
-  isInitialized = true;
-
   handleSearch = async () => {
     const { setSearchedMovies, query, setIsLoadingMovies, searchedMovies, setCategory } =
       this.props;
 
     const params = new URLSearchParams(window.location.search);
+
     if (query) {
       setCategory('');
 
       params.set('query', query);
       params.delete('category');
     } else {
-      this.handleClearSearch();
+      this.clearSearch();
       return;
     }
 
@@ -71,7 +63,7 @@ class Header extends Component<ConnectedProps<typeof connector>> {
     setIsLoadingMovies(false);
   };
 
-  handleClearSearch = () => {
+  clearSearch = () => {
     const params = new URLSearchParams(window.location.search);
     params.delete('query');
 
@@ -112,9 +104,8 @@ class Header extends Component<ConnectedProps<typeof connector>> {
               className='clear-btn position-absolute m-0 d-flex justify-content-center align-items-center'
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
 
-                this.handleClearSearch();
+                this.clearSearch();
               }}
             >
               x

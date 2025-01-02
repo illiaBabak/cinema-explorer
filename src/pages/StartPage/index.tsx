@@ -27,7 +27,7 @@ export class StartPage extends Component {
             To use our service, please login with your TMDB account
           </p>
           <NavLink
-            className='login-btn d-flex justify-content-center align-items-center rounded mt-3'
+            className='login-btn d-flex justify-content-center align-items-center rounded mt-3 text-white'
             to={`${pageConfig.login}?language=${getLanguageFromParams()}`}
           >
             Login

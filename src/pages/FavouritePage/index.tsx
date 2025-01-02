@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
   MovieAction,
-  movieSetFavourite,
+  movieSetFavouriteList,
   movieSetGenres,
   movieSetIsLoading,
 } from 'src/actions/movieActions';
@@ -15,8 +15,8 @@ import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Genre, MovieDetails, MovieIncomplete } from 'src/types';
-import { isMovieIncompleteInfo } from 'src/utils/guards';
+import { Genre, MovieDetails, MovieWithGenres } from 'src/types';
+import { isMovieWithGenres } from 'src/utils/guards';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   favouriteMovies: state.movie.favouriteMovies,
@@ -25,8 +25,8 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setFavouriteMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
-    dispatch(movieSetFavourite(movies)),
+  setFavouriteMovies: (movies: (MovieWithGenres | MovieDetails | null)[]) =>
+    dispatch(movieSetFavouriteList(movies)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
 });
@@ -77,7 +77,7 @@ class FavouritePage extends Component<ConnectedProps<typeof connector>> {
             {!!favouriteMovies.length &&
               favouriteMovies.map((movie, index) => {
                 return (
-                  isMovieIncompleteInfo(movie) && (
+                  isMovieWithGenres(movie) && (
                     <Movie key={`favourite-movie-${index}-${movie?.id}`} movie={movie} />
                   )
                 );

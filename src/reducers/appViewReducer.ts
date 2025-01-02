@@ -1,40 +1,43 @@
 import {
-  PAGE_SET_CURRENT_LANGUAGE,
-  PAGE_SET_LANGUAGES,
-  PAGE_SET_THEME,
-  PageAction,
-} from 'src/actions/pageActions';
+  APP_VIEW_SET_THEME,
+  AppViewAction,
+  APP_VIEW_SET_CURRENT_LANGUAGE,
+  APP_VIEW_SET_LANGUAGES,
+} from 'src/actions/appViewActions';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 import { getThemeFromStorage } from 'src/utils/getThemeFromStorage';
 
-export type PageInitialStateType = {
+export type AppViewInitialStateType = {
   isLightTheme: boolean;
   currentLanguage: string;
   languages: string[];
 };
 
-export const pageInitialState: PageInitialStateType = {
+export const pageInitialState: AppViewInitialStateType = {
   isLightTheme: getThemeFromStorage(),
   currentLanguage: getLanguageFromParams(),
   languages: [],
 };
 
-export const pageReducer = (state = pageInitialState, action: PageAction): PageInitialStateType => {
+export const pageReducer = (
+  state = pageInitialState,
+  action: AppViewAction
+): AppViewInitialStateType => {
   switch (action.type) {
-    case PAGE_SET_THEME:
+    case APP_VIEW_SET_THEME:
       return {
         ...state,
         isLightTheme: action.payload,
       };
 
-    case PAGE_SET_CURRENT_LANGUAGE: {
+    case APP_VIEW_SET_CURRENT_LANGUAGE: {
       return {
         ...state,
         currentLanguage: action.payload,
       };
     }
 
-    case PAGE_SET_LANGUAGES: {
+    case APP_VIEW_SET_LANGUAGES: {
       return {
         ...state,
         languages: action.payload,

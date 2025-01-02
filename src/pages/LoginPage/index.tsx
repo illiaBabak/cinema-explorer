@@ -8,17 +8,17 @@ import {
   loginSetName,
   loginSetPassword,
   loginSetSessionId,
-  loginSetShowPassword,
+  loginSetShouldShowPassword,
 } from 'src/actions/loginActions';
 import { Loader } from 'src/components/Loader';
-import { LoginInitialState } from 'src/reducers/loginReducer';
+import { LoginInitialStateType } from 'src/reducers/loginReducer';
 import { getSessionId } from 'src/api/login';
 import { pageConfig } from 'src/config/pages';
 import ThemeBtn from 'src/components/ThemeBtn';
 import LanguageDrodown from 'src/components/LanguageDrodown';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
-const mapStateToProps = (state: { login: LoginInitialState }) => ({
+const mapStateToProps = (state: { login: LoginInitialStateType }) => ({
   name: state.login.name,
   password: state.login.password,
   error: state.login.error,
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch<LoginAction>) => ({
   setPassword: (val: string) => dispatch(loginSetPassword(val)),
   setSessionId: (sessionId: string | null) => dispatch(loginSetSessionId(sessionId)),
   setError: (error: string | undefined) => dispatch(loginSetError(error)),
-  setShouldShowPassword: (val: boolean) => dispatch(loginSetShowPassword(val)),
+  setShouldShowPassword: (val: boolean) => dispatch(loginSetShouldShowPassword(val)),
   setIsLoading: (val: boolean) => dispatch(loginSetIsLoading(val)),
 });
 
@@ -39,7 +39,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 class LoginPage extends Component<ConnectedProps<typeof connector>> {
   login = async (): Promise<void> => {
-    const { name, password, setIsLoading } = this.props;
+    const { name, password, setIsLoading, setError, setSessionId } = this.props;
 
     if (!name || !password) return;
 
@@ -49,10 +49,10 @@ class LoginPage extends Component<ConnectedProps<typeof connector>> {
 
     setIsLoading(false);
 
-    this.props.setError(error);
+    setError(error);
 
     if (sessionId) {
-      this.props.setSessionId(sessionId);
+      setSessionId(sessionId);
       sessionStorage.setItem('sessionId', sessionId);
       window.location.href = `${pageConfig.home}?language=${getLanguageFromParams()}`;
     }

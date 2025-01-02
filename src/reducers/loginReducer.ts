@@ -1,14 +1,14 @@
 import {
   LOGIN_SET_ERROR,
-  LOGIN_SET_LOADING,
+  LOGIN_SET_IS_LOADING,
   LOGIN_SET_NAME,
   LOGIN_SET_PASSWORD,
   LOGIN_SET_SESSION_ID,
-  LOGIN_SET_SHOW_PASSWORD,
+  LOGIN_SET_SHOULD_SHOW_PASSWORD,
   LoginAction,
 } from 'src/actions/loginActions';
 
-export type LoginInitialState = {
+export type LoginInitialStateType = {
   name: string;
   password: string;
   sessionId: string | null;
@@ -26,7 +26,7 @@ export const initialState = {
   isLoading: false,
 };
 
-export const loginReducer = (state = initialState, action: LoginAction): LoginInitialState => {
+export const loginReducer = (state = initialState, action: LoginAction): LoginInitialStateType => {
   switch (action.type) {
     case LOGIN_SET_NAME:
       return {
@@ -52,14 +52,14 @@ export const loginReducer = (state = initialState, action: LoginAction): LoginIn
         error: action.payload,
       };
 
-    case LOGIN_SET_SHOW_PASSWORD: {
+    case LOGIN_SET_SHOULD_SHOW_PASSWORD: {
       return {
         ...state,
         shouldShowPassword: action.payload,
       };
     }
 
-    case LOGIN_SET_LOADING: {
+    case LOGIN_SET_IS_LOADING: {
       return {
         ...state,
         isLoading: action.payload,

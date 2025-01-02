@@ -11,7 +11,7 @@ export class RedirectPage extends Component {
         <div className='d-flex justify-content-center align-items-center flex-column align-self-center m-auto'>
           <h1 className='text'>Oops, something went wrong...</h1>
           <NavLink
-            className='link-btn d-flex justify-content-center align-items-center rounded mt-4'
+            className='link-btn d-flex justify-content-center align-items-center rounded mt-4 text-white'
             to={pageConfig.start}
           >
             Start page

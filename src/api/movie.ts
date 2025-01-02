@@ -1,28 +1,28 @@
-import { Credits, Genre, MovieDetails, MovieIncomplete } from 'src/types';
-import { MOVIE_CATEGORIES } from 'src/utils/constants';
+import { MovieCredits, Genre, MovieDetails, MovieWithGenres } from 'src/types';
+import { FETCH_OPTIONS, MOVIE_CATEGORIES } from 'src/utils/constants';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
-import { isCredits, isGenresResponse, isMovieDetails, isMovieResponse } from 'src/utils/guards';
+import {
+  isMovieCredits,
+  isGenresResponse,
+  isMovieDetails,
+  isMovieResponse,
+} from 'src/utils/guards';
 
-const GET_OPTIONS = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: import.meta.env.VITE_TMDB_API_KEY,
-  },
-};
-
-type Result = {
-  movies: MovieIncomplete[];
+type MoviesWithMaxPages = {
+  movies: MovieWithGenres[];
   maxPages: number;
 };
 
 export const getMovies = async (
   category: (typeof MOVIE_CATEGORIES)[number],
   page: number
-): Promise<Result> => {
+): Promise<MoviesWithMaxPages> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${category}?language=${getLanguageFromParams()}&page=${page}`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const movieResponse: unknown = await response.json();
@@ -32,10 +32,16 @@ export const getMovies = async (
     : { movies: [], maxPages: 1 };
 };
 
-export const getSearchedMovies = async (query: string, page: number): Promise<Result> => {
+export const getSearchedMovies = async (
+  query: string,
+  page: number
+): Promise<MoviesWithMaxPages> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/search/movie?query=${query}&language=${getLanguageFromParams()}&page=${page}`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const movieResponse: unknown = await response.json();
@@ -48,7 +54,10 @@ export const getSearchedMovies = async (query: string, page: number): Promise<Re
 export const getGenres = async (): Promise<Genre[]> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/genre/movie/list?language=${getLanguageFromParams()}`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const genresResponse: unknown = await response.json();
@@ -62,12 +71,8 @@ export const addOrDeleteFavorite = async (
   accountId: number
 ): Promise<void> => {
   const options = {
+    ...FETCH_OPTIONS,
     method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
     body: JSON.stringify({ media_type: 'movie', media_id: mediaId, favorite: shouldAdd }),
   };
 
@@ -85,12 +90,8 @@ export const addOrDeleteToWatchlist = async (
   accountID: number
 ): Promise<void> => {
   const options = {
+    ...FETCH_OPTIONS,
     method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      Authorization: import.meta.env.VITE_TMDB_API_KEY,
-    },
     body: JSON.stringify({ media_type: 'movie', media_id: mediaId, watchlist: shouldAdd }),
   };
 
@@ -104,13 +105,16 @@ export const addOrDeleteToWatchlist = async (
 
 export const getFavouriteOrWatchlistMovies = async (
   accountId: number,
-  shouldGetFavourite: boolean
-): Promise<MovieIncomplete[]> => {
+  shouldGetFavouriteList: boolean
+): Promise<MovieWithGenres[]> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/account/${accountId}/${
-      shouldGetFavourite ? 'favorite' : 'watchlist'
+      shouldGetFavouriteList ? 'favorite' : 'watchlist'
     }/movies?language=${getLanguageFromParams()}&page=1&sort_by=created_at.asc`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const movieResponse: unknown = await response.json();
@@ -121,7 +125,10 @@ export const getFavouriteOrWatchlistMovies = async (
 export const getMovie = async (movieId: number): Promise<MovieDetails | null> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${movieId}?language=${getLanguageFromParams()}`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const movieResponse: unknown = await response.json();
@@ -129,13 +136,16 @@ export const getMovie = async (movieId: number): Promise<MovieDetails | null> =>
   return isMovieDetails(movieResponse) ? movieResponse : null;
 };
 
-export const getCredits = async (movieId: number): Promise<Credits | null> => {
+export const getCredits = async (movieId: number): Promise<MovieCredits | null> => {
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${movieId}/credits?language=${getLanguageFromParams()}`,
-    GET_OPTIONS
+    {
+      ...FETCH_OPTIONS,
+      method: 'GET',
+    }
   );
 
   const creditsResponse: unknown = await response.json();
 
-  return isCredits(creditsResponse) ? creditsResponse : null;
+  return isMovieCredits(creditsResponse) ? creditsResponse : null;
 };

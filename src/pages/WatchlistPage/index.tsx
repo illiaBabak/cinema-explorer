@@ -5,18 +5,18 @@ import {
   MovieAction,
   movieSetGenres,
   movieSetIsLoading,
-  movieSetWatchlist,
+  movieSetWatchlistList,
 } from 'src/actions/movieActions';
 import Movie from 'src/components/Movie';
 import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Genre, MovieIncomplete } from 'src/types';
+import { Genre, MovieWithGenres } from 'src/types';
 import { getFavouriteOrWatchlistMovies, getGenres } from 'src/api/movie';
 import { Loader } from 'src/components/Loader';
 import LanguageDrodown from 'src/components/LanguageDrodown';
-import { isMovieIncompleteInfo } from 'src/utils/guards';
+import { isMovieWithGenres } from 'src/utils/guards';
 
 const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
   watchlistMovies: state.movie.watchlistMovies,
@@ -25,7 +25,7 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setWatchlistMovies: (movies: MovieIncomplete[]) => dispatch(movieSetWatchlist(movies)),
+  setWatchlistMovies: (movies: MovieWithGenres[]) => dispatch(movieSetWatchlistList(movies)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
   setGenres: (genres: Genre[]) => dispatch(movieSetGenres(genres)),
 });
@@ -76,7 +76,7 @@ class WatchlistPage extends Component<ConnectedProps<typeof connector>> {
             {!!watchlistMovies.length &&
               watchlistMovies.map((movie, index) => {
                 return (
-                  isMovieIncompleteInfo(movie) && (
+                  isMovieWithGenres(movie) && (
                     <Movie key={`favourite-movie-${index}-${movie?.id}`} movie={movie} />
                   )
                 );

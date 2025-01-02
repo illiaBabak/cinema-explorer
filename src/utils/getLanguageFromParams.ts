@@ -1,13 +1,15 @@
 import { isoMapping } from './constants';
+import { getKeyByValue } from './getKeyByValue';
 
 export const getLanguageFromParams = (): string => {
   const params = new URLSearchParams(window.location.search);
 
   const language = params.get('language');
 
-  return language
-    ? language
-    : Object.entries(isoMapping).find(
-        ([, val]) => val === navigator.language.toLocaleUpperCase()
-      )?.[0] ?? '';
+  if (language) return language;
+
+  const userLanguage =
+    Object.values(isoMapping).find((val) => val === navigator.language.toLocaleUpperCase()) ?? '';
+
+  return getKeyByValue(isoMapping, userLanguage) ?? 'en-US';
 };

@@ -6,10 +6,10 @@ import {
   MovieAction,
   movieSetCredits,
   movieSetCurrentCategory,
-  movieSetFavourite,
+  movieSetFavouriteList,
   movieSetFullInfo,
   movieSetIsLoading,
-  movieSetWatchlist,
+  movieSetWatchlistList,
 } from 'src/actions/movieActions';
 import {
   addOrDeleteFavorite,
@@ -25,7 +25,7 @@ import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
-import { Credits, MovieDetails, MovieIncomplete, MovieType } from 'src/types';
+import { MovieCredits, MovieDetails, MovieWithGenres, MovieBaseType } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 import { formatDate } from 'src/utils/formatDate';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
@@ -41,16 +41,16 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
-  setMovieFullInfo: (movieFullInfo: (MovieType & MovieDetails) | null) =>
+  setMovieFullInfo: (movieFullInfo: (MovieBaseType & MovieDetails) | null) =>
     dispatch(movieSetFullInfo(movieFullInfo)),
-  setCredits: (credits: Credits | null) => dispatch(movieSetCredits(credits)),
+  setCredits: (credits: MovieCredits | null) => dispatch(movieSetCredits(credits)),
   setCategory: (category: (typeof MOVIE_CATEGORIES)[number]) =>
     dispatch(movieSetCurrentCategory(category)),
   setIsLoading: (isLoading: boolean) => dispatch(movieSetIsLoading(isLoading)),
-  setFavouriteMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
-    dispatch(movieSetFavourite(movies)),
-  setWatchlistMovies: (movies: (MovieIncomplete | MovieDetails | null)[]) =>
-    dispatch(movieSetWatchlist(movies)),
+  setFavouriteMovies: (movies: (MovieWithGenres | MovieDetails | null)[]) =>
+    dispatch(movieSetFavouriteList(movies)),
+  setWatchlistMovies: (movies: (MovieWithGenres | MovieDetails | null)[]) =>
+    dispatch(movieSetWatchlistList(movies)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

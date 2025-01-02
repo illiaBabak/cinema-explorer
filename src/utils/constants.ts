@@ -4,7 +4,15 @@ export const OBSERVER_OPTIONS = {
   root: null,
   rootMargin: '0px',
   threshold: 0.5,
-};
+} as const;
+
+export const FETCH_OPTIONS = {
+  headers: {
+    accept: 'application/json',
+    'content-type': 'application/json',
+    Authorization: import.meta.env.VITE_TMDB_API_KEY,
+  },
+} as const;
 
 export const isoMapping: Record<string, string> = {
   'af-ZA': 'ZA',

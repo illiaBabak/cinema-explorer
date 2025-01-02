@@ -2,21 +2,25 @@ import { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
-import { PageAction, pageSetCurrentLanguage, pageSetLanguages } from 'src/actions/pageActions';
+import {
+  AppViewAction,
+  appViewSetCurrentLanguage,
+  appViewSetLanguages,
+} from 'src/actions/appViewActions';
 import { getLanguages } from 'src/api/languages';
-import { PageInitialStateType } from 'src/reducers/pageReducer';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 import { isoMapping } from 'src/utils/constants';
 
 const convertIso = (countryCode: string): string | null => isoMapping[countryCode] || null;
 
-const mapStateToProps = (state: { page: PageInitialStateType }) => ({
-  language: state.page.currentLanguage,
-  languages: state.page.languages,
+const mapStateToProps = (state: { appView: AppViewInitialStateType }) => ({
+  language: state.appView.currentLanguage,
+  languages: state.appView.languages,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<PageAction>) => ({
-  setLanguage: (language: string) => dispatch(pageSetCurrentLanguage(language)),
-  setLanguages: (languages: string[]) => dispatch(pageSetLanguages(languages)),
+const mapDispatchToProps = (dispatch: Dispatch<AppViewAction>) => ({
+  setLanguage: (language: string) => dispatch(appViewSetCurrentLanguage(language)),
+  setLanguages: (languages: string[]) => dispatch(appViewSetLanguages(languages)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

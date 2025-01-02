@@ -10,10 +10,10 @@ import { RedirectPage } from 'src/pages/RedirectPage';
 import { StartPage } from 'src/pages/StartPage';
 import WatchlistPage from 'src/pages/WatchlistPage';
 import PersonPage from 'src/pages/PersonPage';
-import { PageInitialStateType } from 'src/reducers/pageReducer';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 
-const mapStateToProps = (state: { page: PageInitialStateType }) => ({
-  isLightTheme: state.page.isLightTheme,
+const mapStateToProps = (state: { appView: AppViewInitialStateType }) => ({
+  isLightTheme: state.appView.isLightTheme,
 });
 
 const connector = connect(mapStateToProps);

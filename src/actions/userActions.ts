@@ -2,7 +2,7 @@ import { User } from 'src/types';
 
 export const USER_SET_INFO = 'user_set_info';
 
-export const USER_SHOULD_SHOW_LOGOUT_WINDOW = 'user_show_logout_window';
+export const USER_SHOULD_SHOW_LOGOUT_WINDOW = 'user_should_show_logout_window';
 
 export type UserAction =
   | { type: typeof USER_SET_INFO; payload: User | null }

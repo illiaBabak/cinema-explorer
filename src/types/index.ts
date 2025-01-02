@@ -22,7 +22,7 @@ export type User = {
   username: string;
 };
 
-export type MovieType = {
+export type MovieBaseType = {
   id: number;
   poster_path: string | null;
   original_title: string;
@@ -31,11 +31,11 @@ export type MovieType = {
   release_date: string;
 };
 
-export type MovieIncomplete = MovieType & {
+export type MovieWithGenres = MovieBaseType & {
   genre_ids: number[];
 };
 
-export type MovieDetails = MovieType & {
+export type MovieDetails = MovieBaseType & {
   runtime: number;
   status: string;
   genres: {
@@ -45,7 +45,7 @@ export type MovieDetails = MovieType & {
 };
 
 export type MovieResponse = {
-  results: MovieIncomplete[];
+  results: MovieWithGenres[];
   total_pages: number;
 };
 
@@ -58,15 +58,15 @@ export type GenresResponse = {
   genres: Genre[];
 };
 
-export type CastEl = {
+export type CastMember = {
   name: string;
   profile_path: string | null;
   character: string;
   id: number;
 };
 
-export type Credits = {
-  cast: CastEl[];
+export type MovieCredits = {
+  cast: CastMember[];
 };
 
 export type Person = {
@@ -77,4 +77,10 @@ export type Person = {
   place_of_birth: string | null;
   profile_path: string;
   known_for_department: string;
+};
+
+export type MoviePageData = {
+  movies: MovieWithGenres[];
+  page: number;
+  maxPages: number;
 };

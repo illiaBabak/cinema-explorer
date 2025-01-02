@@ -1,7 +1,7 @@
 import {
   MOVIE_SET_CREDITS,
   MOVIE_SET_CURRENT_CATEGORY,
-  MOVIE_SET_FAVOURITE,
+  MOVIE_SET_FAVOURITE_LIST,
   MOVIE_SET_FULL_INFO,
   MOVIE_SET_GENRES,
   MOVIE_SET_IS_LOADING,
@@ -10,43 +10,27 @@ import {
   MOVIE_SET_SEARCHED_LIST,
   MOVIE_SET_TOP_RATED_LIST,
   MOVIE_SET_UPCOMING_LIST,
-  MOVIE_SET_WATCHLIST,
+  MOVIE_SET_WATCHLIST_LIST,
   MovieAction,
 } from 'src/actions/movieActions';
-import { Credits, MovieDetails, MovieIncomplete } from 'src/types';
+import { MovieCredits, MovieDetails, MoviePageData, MovieWithGenres } from 'src/types';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 
 export type MovieInitialStateType = {
-  popularMovies: {
-    movies: MovieIncomplete[];
-    page: number;
-    maxPages: number;
-  };
-  upComingMovies: {
-    movies: MovieIncomplete[];
-    page: number;
-    maxPages: number;
-  };
-  topRatedMovies: {
-    movies: MovieIncomplete[];
-    page: number;
-    maxPages: number;
-  };
-  searchedMovies: {
-    movies: MovieIncomplete[];
-    page: number;
-    maxPages: number;
-  };
+  popularMovies: MoviePageData;
+  upComingMovies: MoviePageData;
+  topRatedMovies: MoviePageData;
+  searchedMovies: MoviePageData;
   query: string;
   currentCategory: (typeof MOVIE_CATEGORIES)[number];
   isLoading: boolean;
   genres: {
     [k: string]: string;
   };
-  favouriteMovies: (MovieIncomplete | MovieDetails | null)[];
-  watchlistMovies: (MovieIncomplete | MovieDetails | null)[];
+  favouriteMovies: (MovieWithGenres | MovieDetails | null)[];
+  watchlistMovies: (MovieWithGenres | MovieDetails | null)[];
   movieFullInfo: MovieDetails | null;
-  credits: Credits | null;
+  credits: MovieCredits | null;
 };
 
 export const movieInitialState: MovieInitialStateType = {
@@ -158,14 +142,14 @@ export const movieReducer = (
       };
     }
 
-    case MOVIE_SET_FAVOURITE: {
+    case MOVIE_SET_FAVOURITE_LIST: {
       return {
         ...state,
         favouriteMovies: action.payload,
       };
     }
 
-    case MOVIE_SET_WATCHLIST: {
+    case MOVIE_SET_WATCHLIST_LIST: {
       return {
         ...state,
         watchlistMovies: action.payload,

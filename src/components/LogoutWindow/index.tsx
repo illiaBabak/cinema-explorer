@@ -4,10 +4,10 @@ import { Dispatch } from 'redux';
 import { UserAction, userShouldShowLogoutWindow } from 'src/actions/userActions';
 import { deleteSessionId } from 'src/api/login';
 import { pageConfig } from 'src/config/pages';
-import { LoginInitialState } from 'src/reducers/loginReducer';
+import { LoginInitialStateType } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 
-const mapStateToProps = (state: { user: UserInitialStateType; login: LoginInitialState }) => ({
+const mapStateToProps = (state: { user: UserInitialStateType; login: LoginInitialStateType }) => ({
   user: state.user.user,
   sessionId: state.login.sessionId,
 });
@@ -49,12 +49,12 @@ class LogoutWindow extends Component<ConnectedProps<typeof connector>> {
     return (
       <div
         className='wrapper position-absolute w-100 h-100 d-flex justify-content-center align-items-center'
-        onClick={() => setShouldShowLogoutWindow(false)}
+        onClick={(e) => {
+          setShouldShowLogoutWindow(false);
+          e.stopPropagation();
+        }}
       >
-        <div
-          className='window position-relative p-4 d-flex justify-content-between flex-column align-items-center rounded'
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className='window position-relative p-4 d-flex justify-content-between flex-column align-items-center rounded'>
           <div
             className='close-btn position-absolute d-flex justify-content-center align-items-center'
             onClick={() => setShouldShowLogoutWindow(false)}
