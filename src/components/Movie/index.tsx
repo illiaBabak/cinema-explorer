@@ -116,7 +116,7 @@ class Movie extends Component<ConnectedProps<typeof connector> & Props> {
             src={`http://image.tmdb.org/t/p/w185${movie.poster_path}`}
             alt='movie-icon'
           />
-          <p className='text-center m-0 title'>{movie.original_title}</p>
+          <p className='text-center m-0 title'>{movie.title ?? movie.original_title}</p>
           <div className='genres d-flex flex-row align-items-center justify-content-center w-100 mt-2'>
             {movie.genre_ids.slice(0, 2).map((genreId, index) => (
               <p

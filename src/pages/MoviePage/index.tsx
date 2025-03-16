@@ -23,14 +23,20 @@ import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { MovieCredits, MovieDetails, MovieWithGenres, MovieBaseType } from 'src/types';
+import { capitalize } from 'src/utils/capitalize';
 import { MOVIE_CATEGORIES } from 'src/utils/constants';
 import { formatDate } from 'src/utils/formatDate';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
-const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitialStateType }) => ({
+const mapStateToProps = (state: {
+  movie: MovieInitialStateType;
+  user: UserInitialStateType;
+  appView: AppViewInitialStateType;
+}) => ({
   movieFullInfo: state.movie.movieFullInfo,
   credits: state.movie.credits,
   category: state.movie.currentCategory,
@@ -38,6 +44,7 @@ const mapStateToProps = (state: { movie: MovieInitialStateType; user: UserInitia
   favouriteMovies: state.movie.favouriteMovies,
   watchlistMovies: state.movie.watchlistMovies,
   accountId: state.user.user?.id ?? 0,
+  currentLanguage: state.appView.currentLanguage,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MovieAction>) => ({
@@ -104,6 +111,7 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
       setFavouriteMovies,
       setWatchlistMovies,
       accountId,
+      currentLanguage,
     } = this.props;
 
     const params = new URLSearchParams(window.location.search);
@@ -147,7 +155,7 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                       &lt;- Back
                     </Breadcrumb.Item>
                     <Breadcrumb.Item className='item' active>
-                      {movieFullInfo?.original_title}
+                      {movieFullInfo?.title ?? movieFullInfo?.original_title}
                     </Breadcrumb.Item>
                   </Breadcrumb>
 
@@ -165,11 +173,14 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                   />
                   <div className='d-flex flex-column justify-content-between ms-3 text-white h-100 w-50'>
                     <div className='d-flex flex-column w-100'>
-                      <h2>{movieFullInfo?.original_title}</h2>
+                      <h2> {movieFullInfo?.title ?? movieFullInfo?.original_title}</h2>
                       <div className='d-flex flex-row align-items-center mt-3 fst-italic'>
                         {movieFullInfo?.genres.map(({ name }, index) => {
                           return (
-                            <p className='mb-0 ms-1' key={`genre-${index}`}>
+                            <p
+                              className={`mb-0 ${index === 0 ? '' : 'ms-1'}`}
+                              key={`genre-${index}`}
+                            >
                               {name}
                               {index === movieFullInfo.genres.length - 1 ||
                               movieFullInfo.genres.length === 1
@@ -179,7 +190,7 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                           );
                         })}
                       </div>
-                      <p className='mb-0 mt-1 fst-italic'>
+                      <p className='mb-0 mt-3 fst-italic'>
                         Runtime: {Math.floor((movieFullInfo?.runtime ?? 1) / 60)}h{' '}
                         {(movieFullInfo?.runtime ?? 1) -
                           Math.floor((movieFullInfo?.runtime ?? 1) / 60) * 60}
@@ -187,9 +198,9 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
                       </p>
                       <p className='mb-0 mt-3 fst-italic'>Status: {movieFullInfo?.status}</p>
                       <p className='mb-0 mt-3 fst-italic'>
-                        {formatDate(movieFullInfo?.release_date ?? '')}
+                        {capitalize(formatDate(movieFullInfo?.release_date ?? '', currentLanguage))}
                       </p>
-                      <p className='mb-0 mt-4'>{movieFullInfo?.overview}</p>
+                      <p className='mb-0 mt-3'>{movieFullInfo?.overview}</p>
                       <div className='d-flex flex-row align-items-center mt-4'>
                         <div
                           className='option d-flex flex-row align-items-center justify-content-start p-1 rounded text-dark'

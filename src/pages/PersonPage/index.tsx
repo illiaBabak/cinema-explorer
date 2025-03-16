@@ -10,17 +10,21 @@ import { Loader } from 'src/components/Loader';
 import SideBar from 'src/components/SideBar';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';
+import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { PersonInitialStateType } from 'src/reducers/personReducer';
 import { Person } from 'src/types';
+import { formatDate } from 'src/utils/formatDate';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
 
 const mapStateToProps = (state: {
   person: PersonInitialStateType;
   movie: MovieInitialStateType;
+  appView: AppViewInitialStateType;
 }) => ({
   personInfo: state.person.personInfo,
   isLoading: state.movie.isLoading,
+  currentLanguage: state.appView.currentLanguage,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<PersonAction | MovieAction>) => ({
@@ -33,6 +37,13 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 class PersonPage extends Component<ConnectedProps<typeof connector>> {
   isInitialized = true;
 
+  state = {
+    movieId: new URLSearchParams(window.location.search).get('id'),
+    category: new URLSearchParams(window.location.search).get('category'),
+    previousPage: new URLSearchParams(window.location.search).get('previous'),
+    movieTitle: new URLSearchParams(window.location.search).get('movie-title'),
+  };
+
   getPersonData = async () => {
     this.props.setIsLoading(true);
 
@@ -41,6 +52,13 @@ class PersonPage extends Component<ConnectedProps<typeof connector>> {
     const personId = Number(params.get('person-id'));
 
     const data = await getPerson(personId);
+
+    if (!data)
+      window.location.href = `${pageConfig.movie}?language=${getLanguageFromParams()}&id=${
+        this.state.movieId
+      }&category=${this.state.category}&previous=${
+        this.state.previousPage
+      }&alert=Person not found :(`;
 
     this.props.setPersonInfo(data);
 
@@ -56,17 +74,9 @@ class PersonPage extends Component<ConnectedProps<typeof connector>> {
   }
 
   render(): JSX.Element {
-    const { isLoading, personInfo } = this.props;
+    const { isLoading, personInfo, currentLanguage } = this.props;
 
-    const params = new URLSearchParams(window.location.search);
-
-    const movieId = params.get('id');
-
-    const category = params.get('category');
-
-    const previousPage = params.get('previous');
-
-    const movieTitle = params.get('movie-title');
+    const { movieId, movieTitle, category, previousPage } = this.state;
 
     return (
       <div className='person-page d-flex flex-row h-100 position-relative flex-grow-1'>
@@ -106,13 +116,21 @@ class PersonPage extends Component<ConnectedProps<typeof connector>> {
                 <img
                   className='object-fit-cover poster'
                   src={`http://image.tmdb.org/t/p/w780${personInfo?.profile_path}`}
+                  onError={(e) => {
+                    e.currentTarget.src = 'images/pfp.webp';
+                  }}
                   alt='poster'
                 />
                 <div className='d-flex flex-column justify-content-start ms-3 h-100 w-50'>
                   <h2>{personInfo?.name}</h2>
-                  <i className='mt-3'>{personInfo?.known_for_department}</i>
-                  <i className='mt-3'>Place of birth: {personInfo?.place_of_birth}</i>
-                  <i className='mt-3'>Birthday: {personInfo?.birthday}</i>
+                  <i className='mt-3'>{personInfo?.known_for_department ?? 'unknown'}</i>
+                  <i className='mt-3'>Place of birth: {personInfo?.place_of_birth ?? 'unknown'}</i>
+                  <i className='mt-3'>
+                    Birthday:{' '}
+                    {personInfo?.birthday
+                      ? formatDate(personInfo?.birthday, currentLanguage)
+                      : 'unknown'}
+                  </i>
                   {personInfo?.deathday && <i className='mt-3'>{personInfo.deathday}</i>}
                   <p className='biography scroll-container-y mt-4'>{personInfo?.biography}</p>
                 </div>

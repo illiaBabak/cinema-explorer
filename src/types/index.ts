@@ -26,6 +26,7 @@ export type MovieBaseType = {
   id: number;
   poster_path: string | null;
   original_title: string;
+  title: string;
   backdrop_path: string | null;
   overview: string;
   release_date: string;
@@ -83,4 +84,13 @@ export type MoviePageData = {
   movies: MovieWithGenres[];
   page: number;
   maxPages: number;
+};
+
+export type AlertProps = {
+  text: string;
+  type: 'success' | 'error';
+  position: 'top' | 'bottom';
+  onClose: () => void;
+  onMouseLeave: () => void;
+  onMouseEnter: () => void;
 };

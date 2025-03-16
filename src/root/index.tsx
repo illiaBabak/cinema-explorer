@@ -11,6 +11,7 @@ import { StartPage } from 'src/pages/StartPage';
 import WatchlistPage from 'src/pages/WatchlistPage';
 import PersonPage from 'src/pages/PersonPage';
 import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
+import { Alert } from 'src/components/Alert';
 
 const mapStateToProps = (state: { appView: AppViewInitialStateType }) => ({
   isLightTheme: state.appView.isLightTheme,
@@ -20,6 +21,31 @@ const connector = connect(mapStateToProps);
 
 class App extends Component<ConnectedProps<typeof connector>> {
   isInitialized = true;
+
+  state = {
+    alertText: new URLSearchParams(window.location.search).get('alert'),
+    showAlert: !!new URLSearchParams(window.location.search).get('alert'),
+    timeoutId: 0,
+  };
+
+  startAlertTimer = (): void => {
+    const timeoutId = setTimeout(() => {
+      this.setState({ showAlert: false });
+    }, 5000);
+
+    this.setState({ timeoutId });
+  };
+
+  handleMouseEnter = (): void => {
+    if (this.state.timeoutId) {
+      clearTimeout(this.state.timeoutId);
+      this.setState({ timeoutId: null });
+    }
+  };
+
+  handleMouseLeave = (): void => {
+    this.startAlertTimer();
+  };
 
   switchColors = () => {
     const { isLightTheme } = this.props;
@@ -82,6 +108,17 @@ class App extends Component<ConnectedProps<typeof connector>> {
             </Route>
           </Switch>
         </BrowserRouter>
+
+        {!!this.state.showAlert && !!this.state.alertText && (
+          <Alert
+            text={this.state.alertText}
+            type='error'
+            position='top'
+            onClose={() => this.setState({ showAlert: false })}
+            onMouseEnter={this.handleMouseEnter}
+            onMouseLeave={this.handleMouseLeave}
+          />
+        )}
       </div>
     );
   }

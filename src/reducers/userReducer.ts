@@ -1,14 +1,18 @@
-import { USER_SET_INFO, USER_SHOULD_SHOW_LOGOUT_WINDOW, UserAction } from 'src/actions/userActions';
+import {
+  USER_SET_INFO,
+  USER_SHOULD_SHOW_LOGOUT_POPOVER,
+  UserAction,
+} from 'src/actions/userActions';
 import { User } from 'src/types';
 
 export type UserInitialStateType = {
   user: User | null;
-  shouldShowLogoutWindow: boolean;
+  shouldShowLogoutPopover: boolean;
 };
 
 export const userInitialState: UserInitialStateType = {
   user: null,
-  shouldShowLogoutWindow: false,
+  shouldShowLogoutPopover: false,
 };
 
 export const userReducer = (state = userInitialState, action: UserAction): UserInitialStateType => {
@@ -19,10 +23,10 @@ export const userReducer = (state = userInitialState, action: UserAction): UserI
         user: action.payload,
       };
 
-    case USER_SHOULD_SHOW_LOGOUT_WINDOW:
+    case USER_SHOULD_SHOW_LOGOUT_POPOVER:
       return {
         ...state,
-        shouldShowLogoutWindow: action.payload,
+        shouldShowLogoutPopover: action.payload,
       };
 
     default:

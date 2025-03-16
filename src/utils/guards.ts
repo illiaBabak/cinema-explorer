@@ -61,6 +61,8 @@ export const isMovie = (data: unknown): data is MovieBaseType =>
   'overview' in data &&
   'backdrop_path' in data &&
   'release_date' in data &&
+  'title' in data &&
+  isString(data.title) &&
   (isString(data.poster_path) || !data.poster_path) &&
   isString(data.original_title) &&
   (isNull(data.backdrop_path) || isString(data.backdrop_path)) &&

@@ -1,0 +1,33 @@
+.popover {
+  width: 180px;
+  height: 65px;
+  background-color: var(--main);
+
+  z-index: 5;
+  border: 2px solid var(--border);
+
+  .logout-btn {
+    width: 80px;
+    height: 40px;
+    text-decoration: none;
+    color: white;
+    background-image: var(--gradient);
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      transition: 0.33s;
+    }
+  }
+
+  &.full-view {
+    left: 8px;
+    bottom: 100px;
+  }
+
+  &.shorter-view {
+    left: 4px;
+    bottom: 65px;
+  }
+}

@@ -2,18 +2,18 @@ import { Component } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import { LoginAction, loginSetSessionId } from 'src/actions/loginActions';
-import { UserAction, userSetInfo, userShouldShowLogoutWindow } from 'src/actions/userActions';
+import { UserAction, userSetInfo, userShouldShowLogoutPopover } from 'src/actions/userActions';
 import { getUser } from 'src/api/user';
 import { LoginInitialStateType } from 'src/reducers/loginReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { User } from 'src/types';
 import { isString } from 'src/utils/guards';
-import LogoutWindow from '../LogoutWindow';
 import { pageConfig } from 'src/config/pages';
 import { NavLink } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { AppViewInitialStateType } from 'src/reducers/appViewReducer';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
+import LogoutPopover from '../LogoutPopover';
 
 type Props = {
   isFullView: boolean;
@@ -26,15 +26,15 @@ const mapStateToProps = (state: {
 }) => ({
   sessionId: state.login.sessionId,
   user: state.user.user,
-  shouldShowLogoutWindow: state.user.shouldShowLogoutWindow,
+  shouldShowLogoutPopover: state.user.shouldShowLogoutPopover,
   isLightTheme: state.appView.isLightTheme,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<LoginAction | UserAction>) => ({
   setSessionId: (sessionId: string) => dispatch(loginSetSessionId(sessionId)),
   setUserInfo: (userInfo: User) => dispatch(userSetInfo(userInfo)),
-  setShouldShowLogoutWindow: (shouldShow: boolean) =>
-    dispatch(userShouldShowLogoutWindow(shouldShow)),
+  setShouldShowLogoutPopover: (shouldShow: boolean) =>
+    dispatch(userShouldShowLogoutPopover(shouldShow)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -84,7 +84,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
   }
 
   render(): JSX.Element {
-    const { user, setShouldShowLogoutWindow, shouldShowLogoutWindow, isFullView, isLightTheme } =
+    const { user, setShouldShowLogoutPopover, shouldShowLogoutPopover, isFullView, isLightTheme } =
       this.props;
     const { pathname } = window.location;
 
@@ -96,7 +96,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
 
     return (
       <>
-        {shouldShowLogoutWindow && <LogoutWindow />}
+        {shouldShowLogoutPopover && <LogoutPopover isFullView={isFullView} />}
         <div
           className={`sidebar d-flex flex-column justify-content-between h-100 py-4 ${
             isLightTheme ? 'light-theme' : 'dark-theme'
@@ -178,7 +178,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
 
           <div
             className='user d-flex flex-row align-items-center justify-content-start flex-wrap'
-            onClick={() => setShouldShowLogoutWindow(true)}
+            onClick={() => setShouldShowLogoutPopover(true)}
           >
             {userImage ? (
               <img

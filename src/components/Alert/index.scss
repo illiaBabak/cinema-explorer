@@ -1,0 +1,104 @@
+.custom-alert {
+  min-width: 230px;
+  max-width: 90vw;
+  width: auto;
+  height: 65px;
+  border-radius: 8px;
+  color: #6a6a6a;
+  left: 50%;
+  transform: translate(-50%, 0);
+  animation: showAndHide 1.5s ease-in-out forwards;
+  z-index: 20;
+
+  .alert-img {
+    min-width: 50px;
+    max-width: 50px;
+    height: 50px;
+    background-size: contain;
+    left: 0;
+  }
+
+  .alert-text {
+    font-size: 20px;
+  }
+
+  .close-alert-btn {
+    right: 4px;
+    top: 4px;
+    font-size: 24px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      transition: 0.25s;
+    }
+  }
+}
+
+.success {
+  background-color: #1bc27a;
+
+  .alert-img {
+    background-image: url('https://static-00.iconduck.com/assets.00/success-icon-512x512-qdg1isa0.png');
+  }
+}
+
+.error {
+  background-color: #ec1a2d;
+
+  .alert-img {
+    background-image: url('https://www.freeiconspng.com/thumbs/error-icon/error-icon-4.png');
+  }
+}
+
+.top {
+  top: -100px;
+  animation: showAndHideFromTop 1.3s ease-in-out forwards;
+}
+
+.bottom {
+  bottom: -100px;
+  animation: showAndHideFromBottom 1.3s ease-in-out forwards;
+}
+
+@keyframes showAndHideFromTop {
+  0% {
+    top: -100px;
+  }
+
+  100% {
+    top: 24px;
+  }
+}
+
+@keyframes showAndHideFromBottom {
+  0% {
+    bottom: -100px;
+  }
+
+  100% {
+    bottom: 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .custom-alert {
+    height: 45px;
+
+    .alert-img {
+      min-width: 35px;
+      max-width: 35px;
+      height: 35px;
+    }
+
+    .alert-text {
+      font-size: 16px;
+    }
+
+    .close-alert-btn {
+      font-size: 20px;
+    }
+  }
+}
