@@ -178,7 +178,7 @@ class SideBar extends Component<ConnectedProps<typeof connector> & Props> {
 
           <div
             className='user d-flex flex-row align-items-center justify-content-start flex-wrap'
-            onClick={() => setShouldShowLogoutPopover(true)}
+            onClick={() => setShouldShowLogoutPopover(!shouldShowLogoutPopover)}
           >
             {userImage ? (
               <img

@@ -17,6 +17,9 @@ importers:
       react-bootstrap:
         specifier: ^2.10.5
         version: 2.10.5(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-click-away-listener:
+        specifier: ^2.3.0
+        version: 2.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -1392,6 +1395,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-click-away-listener@2.3.0:
+    resolution: {integrity: sha512-lIc6Pmo33fqMtNugmXUyDrGocsKlFP15LWmfq1m9VTcWzH2cEIS62f12NsRfon74yyRRKzWA7ZGHKQWGQ1an/g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
@@ -3377,6 +3386,11 @@ snapshots:
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 18.3.12
+
+  react-click-away-listener@2.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-dom@18.3.1(react@18.3.1):
     dependencies:
