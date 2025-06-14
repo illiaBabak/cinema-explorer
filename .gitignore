@@ -26,5 +26,3 @@ build
 .eslintrc
 .prettierrc
 .env
-tsconfig.json
-tsconfig.node.json

@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { AlertProps } from 'src/types';
 
 export const Alert = ({

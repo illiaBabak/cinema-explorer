@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, JSX } from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';

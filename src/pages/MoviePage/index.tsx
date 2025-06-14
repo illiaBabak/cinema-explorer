@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, JSX } from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -68,7 +68,7 @@ class MoviePage extends Component<ConnectedProps<typeof connector>> {
   getData = async () => {
     this.props.setIsLoading(true);
 
-    const movieId = Number(new URLSearchParams(location.search).get('id')) ?? 0;
+    const movieId = Number(new URLSearchParams(location.search).get('id'));
     const category = new URLSearchParams(location.search).get('category') ?? 'upcoming';
 
     const movie = await getMovie(movieId);

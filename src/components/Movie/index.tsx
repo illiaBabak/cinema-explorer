@@ -1,4 +1,4 @@
-import { Component, createRef } from 'react';
+import { Component, createRef, JSX } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
@@ -12,6 +12,7 @@ import { MovieInitialStateType } from 'src/reducers/movieReducer';
 import { UserInitialStateType } from 'src/reducers/userReducer';
 import { MovieDetails, MovieWithGenres } from 'src/types';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
+import React from 'react';
 
 type Props = {
   movie: MovieWithGenres;

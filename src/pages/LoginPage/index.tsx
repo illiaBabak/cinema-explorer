@@ -17,6 +17,7 @@ import { pageConfig } from 'src/config/pages';
 import ThemeBtn from 'src/components/ThemeBtn';
 import LanguageDrodown from 'src/components/LanguageDrodown';
 import { getLanguageFromParams } from 'src/utils/getLanguageFromParams';
+import { JSX } from 'react/jsx-runtime';
 
 const mapStateToProps = (state: { login: LoginInitialStateType }) => ({
   name: state.login.name,

@@ -1,4 +1,4 @@
-import { Component, createRef } from 'react';
+import { Component, createRef, JSX } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import {

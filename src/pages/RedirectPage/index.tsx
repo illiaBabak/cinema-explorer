@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, JSX } from 'react';
 import { NavLink } from 'react-router-dom';
 import ThemeBtn from 'src/components/ThemeBtn';
 import { pageConfig } from 'src/config/pages';

@@ -3,10 +3,13 @@ export const formatDate = (dateToFormat: string, locale: string): string => {
 
   if (!dateToFormat) return '';
 
-  return new Intl.DateTimeFormat(locale, {
+  const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
+
+  const fullDate = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    weekday: 'long',
   }).format(date);
+
+  return `${weekday}, ${fullDate}`;
 };
